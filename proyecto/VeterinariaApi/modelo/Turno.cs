@@ -13,7 +13,7 @@ namespace VeterinariaApi.Models
         // Propiedades de navegación
         public Paciente Paciente { get; set; }
         public Usuario Veterinario { get; set; }
-        public string Notas { get; set; }  //  observaciones
+        public string Notas { get; set; }
 
 
     }
