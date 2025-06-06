@@ -25,19 +25,28 @@ namespace VeterinariaApi.Controllers
         }
 
 
-        //api/turno
-        [Authorize(Roles = "Admin,Recepcionista,Veterinario")]
+        //api/turnos
+        [Authorize(Roles = "Admin,Recepcionista")]
         [HttpPost]
-        public async Task<IActionResult> CrearTurno([FromBody] Turno turno)
+        public async Task<IActionResult> CrearTurno(TurnoDto turnoDto)
         {
-            var pacienteExiste = await _context.Pacientes.AnyAsync(p => p.Id == turno.PacienteId);
-            if (!pacienteExiste)
+            var pacienteExiste = await _context.Pacientes.FirstOrDefaultAsync(p => p.Id == turnoDto.PacienteId);
+            if (pacienteExiste == null)
                 return BadRequest(new { mensaje = "El paciente no existe" });
 
-            var veterinario = await _context.Usuarios.FirstOrDefaultAsync(u => u.Id == turno.VeterinarioId && u.Rol == "Veterinario");
+            var veterinario = await _context.Usuarios.FirstOrDefaultAsync(u => u.Id == turnoDto.VeterinarioId && u.Rol == "Veterinario");
             if (veterinario == null)
                 return BadRequest(new { mensaje = "El veterinario no existe o no tiene rol válido" });
 
+            var turno = new Turno
+            {
+                FechaHora = DateTime.SpecifyKind(turnoDto.FechaHora, DateTimeKind.Utc),
+                Estado = turnoDto.Estado,
+                PacienteId = turnoDto.PacienteId,
+                VeterinarioId = turnoDto.VeterinarioId,
+                Notas = turnoDto.Notas
+
+            };
             _context.Turnos.Add(turno);
             await _context.SaveChangesAsync();
 
@@ -81,7 +90,7 @@ namespace VeterinariaApi.Controllers
             if (turno == null)
                 return NotFound(new { mensaje = "Turno no encontrado" });
 
-            turno.FechaHora = turnoDto.FechaHora;
+            turno.FechaHora = turnoDto.FechaHora.ToUniversalTime();
             turno.Estado = turnoDto.Estado;
             turno.PacienteId = turnoDto.PacienteId;
             turno.VeterinarioId = turnoDto.VeterinarioId;
@@ -109,5 +118,28 @@ namespace VeterinariaApi.Controllers
             return Ok(new { mensaje = "Turno eliminado correctamente" });
         }
 
+        //api/turnos/buscar?fecha=2025-06-06&veterinarioId=6
+        [HttpGet("buscar")]
+        public async Task<IActionResult> BuscarTurnos([FromQuery] DateTime? fecha, [FromQuery] int? veterinarioId)
+        {
+            var query = _context.Turnos
+                .Include(t => t.Paciente)
+                .Include(t => t.Veterinario)
+                .AsQueryable();
+
+            if (fecha.HasValue)
+            {
+                var fechaInicio = DateTime.SpecifyKind(fecha.Value.Date, DateTimeKind.Utc);
+                var fechaFin = fechaInicio.AddDays(1);
+
+                query = query.Where(t => t.FechaHora >= fechaInicio && t.FechaHora < fechaFin);
+            }
+
+            if (veterinarioId.HasValue)
+                query = query.Where(t => t.VeterinarioId == veterinarioId.Value);
+
+            var turnos = await query.ToListAsync();
+            return Ok(turnos);
+        }
     }
 }
