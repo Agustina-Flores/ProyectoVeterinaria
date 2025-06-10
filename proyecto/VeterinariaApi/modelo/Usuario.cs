@@ -1,5 +1,3 @@
-
-
 namespace VeterinariaApi.Models
 {
     public class Usuario

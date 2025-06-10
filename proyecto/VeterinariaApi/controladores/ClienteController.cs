@@ -28,17 +28,28 @@ namespace VeterinariaApi.Controllers
         [HttpPost]
         public async Task<IActionResult> CrearCliente(ClienteDto dto)
         {
-            var cliente = new Cliente
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+            try
             {
-                Nombre = dto.Nombre,
-                Telefono = dto.Telefono,
-                Email = dto.Email
-            };
 
-            _context.Clientes.Add(cliente);
-            await _context.SaveChangesAsync();
+                var cliente = new Cliente
+                {
+                    Nombre = dto.Nombre,
+                    Telefono = dto.Telefono,
+                    Email = dto.Email
+                };
 
-            return Ok(new { mensaje = "Cliente creado correctamente", cliente });
+                _context.Clientes.Add(cliente);
+                await _context.SaveChangesAsync();
+
+                return Ok(new { mensaje = "Cliente creado correctamente", cliente });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { mensaje = "Ocurrió un error inesperado", detalle = ex.Message });
+            }
+
         }
 
         //api/clientes
@@ -61,19 +72,36 @@ namespace VeterinariaApi.Controllers
         //api/clientes/{id}
         [Authorize(Roles = "Admin")]
         [HttpPut("{id}")]
-        public async Task<IActionResult> EditarCliente(int id, ClienteDto clienteDto)
+        public async Task<IActionResult> EditarCliente(int id, [FromBody] ClienteDto clienteDto)
         {
-            var cliente = await _context.Clientes.FindAsync(id);
-            if (cliente == null)
-                return NotFound(new { mensaje = "Cliente no encontrado" });
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+            try
+            {
+                var cliente = await _context.Clientes.FindAsync(id);
+                if (cliente == null)
+                    return NotFound(new { mensaje = "Cliente no encontrado" });
 
-            cliente.Nombre = clienteDto.Nombre;
-            cliente.Telefono = clienteDto.Telefono;
-            cliente.Email = clienteDto.Email;
+                var emailExiste = await _context.Clientes
+                    .AnyAsync(c => c.Email.ToLower() == clienteDto.Email.ToLower() && c.Id != id);
 
-            await _context.SaveChangesAsync();
+                if (emailExiste)
+                    return BadRequest(new { mensaje = "Ya existe un cliente con ese email" });
 
-            return Ok(new { mensaje = "Cliente actualizado correctamente" });
+                cliente.Nombre = clienteDto.Nombre;
+                cliente.Telefono = clienteDto.Telefono;
+                cliente.Email = clienteDto.Email;
+
+                await _context.SaveChangesAsync();
+
+                return Ok(new { mensaje = "Cliente actualizado correctamente", cliente });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { mensaje = "Ocurrió un error inesperado", detalle = ex.Message });
+
+            }
+
         }
 
         //api/clientes/{id}

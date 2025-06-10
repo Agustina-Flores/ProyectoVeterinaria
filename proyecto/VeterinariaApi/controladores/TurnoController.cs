@@ -30,27 +30,37 @@ namespace VeterinariaApi.Controllers
         [HttpPost]
         public async Task<IActionResult> CrearTurno(TurnoDto turnoDto)
         {
-            var pacienteExiste = await _context.Pacientes.FirstOrDefaultAsync(p => p.Id == turnoDto.PacienteId);
-            if (pacienteExiste == null)
-                return BadRequest(new { mensaje = "El paciente no existe" });
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
 
-            var veterinario = await _context.Usuarios.FirstOrDefaultAsync(u => u.Id == turnoDto.VeterinarioId && u.Rol == "Veterinario");
-            if (veterinario == null)
-                return BadRequest(new { mensaje = "El veterinario no existe o no tiene rol válido" });
-
-            var turno = new Turno
+            try
             {
-                FechaHora = DateTime.SpecifyKind(turnoDto.FechaHora, DateTimeKind.Utc),
-                Estado = turnoDto.Estado,
-                PacienteId = turnoDto.PacienteId,
-                VeterinarioId = turnoDto.VeterinarioId,
-                Notas = turnoDto.Notas
+                var pacienteExiste = await _context.Pacientes.FirstOrDefaultAsync(p => p.Id == turnoDto.PacienteId);
+                if (pacienteExiste == null)
+                    return BadRequest(new { mensaje = "El paciente no existe" });
 
-            };
-            _context.Turnos.Add(turno);
-            await _context.SaveChangesAsync();
+                var veterinario = await _context.Usuarios.FirstOrDefaultAsync(u => u.Id == turnoDto.VeterinarioId && u.Rol == "Veterinario");
+                if (veterinario == null)
+                    return BadRequest(new { mensaje = "El veterinario no existe o no tiene rol válido" });
 
-            return Ok(new { mensaje = "Turno creado correctamente", turno });
+                var turno = new Turno
+                {
+                    FechaHora = DateTime.SpecifyKind(turnoDto.FechaHora, DateTimeKind.Utc),
+                    Estado = turnoDto.Estado,
+                    PacienteId = turnoDto.PacienteId,
+                    VeterinarioId = turnoDto.VeterinarioId,
+                    Notas = turnoDto.Notas
+
+                };
+                _context.Turnos.Add(turno);
+                await _context.SaveChangesAsync();
+
+                return Ok(new { mensaje = "Turno creado correctamente", turno });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { mensaje = "Ocurrió un error inesperado", detalle = ex.Message });
+            }
         }
 
         //api/turnos
@@ -86,21 +96,31 @@ namespace VeterinariaApi.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> EditarTurnos(int id, TurnoDto turnoDto)
         {
-            var turno = await _context.Turnos.FindAsync(id);
-            if (turno == null)
-                return NotFound(new { mensaje = "Turno no encontrado" });
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
 
-            turno.FechaHora = turnoDto.FechaHora.ToUniversalTime();
-            turno.Estado = turnoDto.Estado;
-            turno.PacienteId = turnoDto.PacienteId;
-            turno.VeterinarioId = turnoDto.VeterinarioId;
+            try
+            {
+                var turno = await _context.Turnos.FindAsync(id);
+                if (turno == null)
+                    return NotFound(new { mensaje = "Turno no encontrado" });
 
-            if (!string.IsNullOrWhiteSpace(turnoDto.Notas))
-                turno.Notas = turnoDto.Notas;
+                turno.FechaHora = turnoDto.FechaHora.ToUniversalTime();
+                turno.Estado = turnoDto.Estado;
+                turno.PacienteId = turnoDto.PacienteId;
+                turno.VeterinarioId = turnoDto.VeterinarioId;
 
-            await _context.SaveChangesAsync();
+                if (!string.IsNullOrWhiteSpace(turnoDto.Notas))
+                    turno.Notas = turnoDto.Notas;
 
-            return Ok(new { mensaje = "Turno actualizado correctamente" });
+                await _context.SaveChangesAsync();
+
+                return Ok(new { mensaje = "Turno actualizado correctamente" });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { mensaje = "Ocurrió un error inesperado", detalle = ex.Message });
+            }
         }
 
         //api/turnos/{id}

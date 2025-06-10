@@ -32,12 +32,23 @@ namespace VeterinariaApi.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> Login(LoginDto dto)
         {
-            var user = await _context.Usuarios.FirstOrDefaultAsync(u => u.Email == dto.Email);
-            if (user == null || !BCrypt.Net.BCrypt.Verify(dto.Password, user.PasswordHash))
-                return Unauthorized("Credenciales inválidas");
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+            try
+            {
+                var user = await _context.Usuarios.FirstOrDefaultAsync(u => u.Email == dto.Email);
+                if (user == null || !BCrypt.Net.BCrypt.Verify(dto.Password, user.PasswordHash))
+                    return Unauthorized("Credenciales inválidas");
 
-            var token = GenerateJwtToken(user);
-            return Ok(new { token });
+                var token = GenerateJwtToken(user);
+                return Ok(new { token });
+            }
+            catch (Exception ex)
+            {
+
+                return StatusCode(500, new { mensaje = "Ocurrió un error inesperado", detalle = ex.Message });
+            }
+
         }
 
         //api/auth/register
@@ -45,25 +56,41 @@ namespace VeterinariaApi.Controllers
         [HttpPost("register")]
         public async Task<IActionResult> Register(RegisterDto dto)
         {
+            var rolesValidos = new[] { "Admin", "Veterinario", "Recepcionista" };
 
-            var existe = _context.Usuarios
-            .Any(u => u.Email.ToLower() == dto.Email.ToLower());
-
-            if (existe)
-                return BadRequest(new { mensaje = "El email ya está registrado" });
-
-            var user = new Usuario
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+            try
             {
-                Nombre = dto.Nombre,
-                Email = dto.Email,
-                PasswordHash = BCrypt.Net.BCrypt.HashPassword(dto.Password),
-                Rol = dto.Rol
-            };
 
-            _context.Usuarios.Add(user);
-            await _context.SaveChangesAsync();
+                if (!rolesValidos.Contains(dto.Rol))
+                    return BadRequest(new { mensaje = "Rol inválido" });
 
-            return Ok("Usuario creado");
+                var existe = _context.Usuarios
+                .Any(u => u.Email.ToLower() == dto.Email.ToLower());
+
+                if (existe)
+                    return BadRequest(new { mensaje = "El email ya está registrado" });
+
+                var user = new Usuario
+                {
+                    Nombre = dto.Nombre,
+                    Email = dto.Email,
+                    PasswordHash = BCrypt.Net.BCrypt.HashPassword(dto.Password),
+                    Rol = dto.Rol
+                };
+
+                _context.Usuarios.Add(user);
+                await _context.SaveChangesAsync();
+
+                return Ok("Usuario creado");
+
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { mensaje = "Ocurrió un error inesperado", detalle = ex.Message });
+            }
+
         }
 
         [Authorize]//solo usuarios logueados
@@ -109,8 +136,8 @@ namespace VeterinariaApi.Controllers
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
             var token = new JwtSecurityToken(
-                issuer: "https://veterinariaApi.com",
-                audience: "https://veterinariaApi.com",
+                issuer: "https://veterinariaApi.com", //Quién va a consumir el token. Por lo general, tu frontend o la misma API.
+                audience: "https://veterinariaApi.com",//Quién emite el token (tu backend)
                 claims: claims,
                 expires: DateTime.Now.AddHours(2),
                 signingCredentials: creds);

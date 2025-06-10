@@ -29,19 +29,29 @@ namespace VeterinariaApi.Controllers
         [HttpPost]
         public async Task<IActionResult> CrearPaciente(PacienteDto dto)
         {
-            var paciente = new Paciente
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            try
             {
-                Nombre = dto.Nombre,
-                Edad = dto.Edad,
-                Especie = dto.Especie,
-                Raza = dto.Raza,
-                ClienteId = dto.ClienteId
-            };
+                var paciente = new Paciente
+                {
+                    Nombre = dto.Nombre,
+                    Edad = dto.Edad,
+                    Especie = dto.Especie,
+                    Raza = dto.Raza,
+                    ClienteId = dto.ClienteId
+                };
 
-            _context.Pacientes.Add(paciente);
-            await _context.SaveChangesAsync();
+                _context.Pacientes.Add(paciente);
+                await _context.SaveChangesAsync();
 
-            return Ok(new { mensaje = "Paciente creado correctamente", paciente });
+                return Ok(new { mensaje = "Paciente creado correctamente", paciente });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { mensaje = "Ocurrió un error inesperado", detalle = ex.Message });
+            }
         }
 
 
@@ -64,24 +74,33 @@ namespace VeterinariaApi.Controllers
             return Ok(pacientes);
         }
 
-
         //api/pacientes/{id}
         [Authorize(Roles = "Admin,Recepcionista,Veterinario")]
         [HttpPut("{id}")]
         public async Task<IActionResult> EditarPaciente(int id, PacienteDto pacienteDto)
         {
-            var paciente = await _context.Pacientes.FindAsync(id);
-            if (paciente == null)
-                return NotFound(new { mensaje = "Paciente no encontrado" });
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+            try
+            {
+                var paciente = await _context.Pacientes.FindAsync(id);
+                if (paciente == null)
+                    return NotFound(new { mensaje = "Paciente no encontrado" });
 
-            paciente.Nombre = pacienteDto.Nombre;
-            paciente.Edad = pacienteDto.Edad;
-            paciente.Raza = pacienteDto.Raza;
-            paciente.Especie = pacienteDto.Especie;
-            paciente.ClienteId = pacienteDto.ClienteId;
-            await _context.SaveChangesAsync();
+                paciente.Nombre = pacienteDto.Nombre;
+                paciente.Edad = pacienteDto.Edad;
+                paciente.Raza = pacienteDto.Raza;
+                paciente.Especie = pacienteDto.Especie;
+                paciente.ClienteId = pacienteDto.ClienteId;
+                await _context.SaveChangesAsync();
 
-            return Ok(new { mensaje = "Paciente actualizado correctamente" });
+                return Ok(new { mensaje = "Paciente actualizado correctamente" });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { mensaje = "Ocurrió un error inesperado", detalle = ex.Message });
+            }
+
         }
 
         //api/pacientes/{id}

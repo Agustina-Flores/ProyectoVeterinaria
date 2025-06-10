@@ -13,6 +13,7 @@ namespace VeterinariaApi.Data
         public DbSet<Cliente> Clientes { get; set; }
         public DbSet<Paciente> Pacientes { get; set; }
         public DbSet<Turno> Turnos { get; set; }
+        public DbSet<HistoriaClinica> HistoriaClinica { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
