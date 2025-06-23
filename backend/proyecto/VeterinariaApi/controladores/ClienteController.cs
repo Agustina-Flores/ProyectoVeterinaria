@@ -53,7 +53,7 @@ namespace VeterinariaApi.Controllers
         }
 
         //api/clientes
-        [Authorize(Roles = "Admin,Recepcionista")]
+        [Authorize(Roles = "Admin,Recepcionista,Veterinario")]
         [HttpGet]
         public IActionResult ObtenerClientes()
         {
@@ -70,7 +70,7 @@ namespace VeterinariaApi.Controllers
         }
 
         //api/clientes/{id}
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin,Recepcionista")]
         [HttpPut("{id}")]
         public async Task<IActionResult> EditarCliente(int id, [FromBody] ClienteDto clienteDto)
         {
@@ -118,6 +118,26 @@ namespace VeterinariaApi.Controllers
 
             return Ok(new { mensaje = "Cliente eliminado correctamente" });
         }
+
+        [Authorize(Roles = "Admin,Recepcionista,Veterinario")]
+        [HttpGet("{id}/pacientes")] // api/clientes/{id}/pacientes
+        public IActionResult ObtenerPacientesPorCliente(int id)
+        {
+            var pacientes = _context.Pacientes
+                .Where(p => p.ClienteId == id)
+                .Select(p => new
+                {
+                    p.Id,
+                    p.Nombre,
+                    p.Edad,
+                    p.Raza,
+                    p.Especie,
+                    p.ClienteId
+                }).ToList();
+
+            return Ok(pacientes);
+        }
+
     }
 }
 

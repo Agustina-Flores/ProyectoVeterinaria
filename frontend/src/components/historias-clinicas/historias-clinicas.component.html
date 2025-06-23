@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+   <h2>Historial Clínico del Paciente #{{ pacienteId }}</h2>
+   <ul *ngIf="historialClinico.length > 0; else sinDatos">
+        <li *ngFor="let historial of historialClinico">
+            🗓 {{ historial.fecha | date:'short' }} - 🧾 {{ historial.diagnostico }}<br>
+                💊 {{ historial.tratamiento }}<br>
+                📝 {{ historial.observaciones }}
+        </li> 
+   </ul> 
+   
+   <ng-template #sinDatos>
+     <p>No hay historial clínico para este paciente.</p>
+   </ng-template>
+   <button *ngIf="isAdmin || isRecepcionista || isVeterinario"  (click)="crearNuevoHistorial()">➕</button>
+   <button (click)="auth.logout()">🚪 Cerrar sesión</button>
+   <button (click)="auth.volverLogin()">🔙 Volver al login</button>
+   <div *ngIf="historialClinicoSeleccionado">
+  <h3>Nuevo Historial Clinico</h3>
+  <form (ngSubmit)="agregarHistorial()" #form="ngForm"> 
+    <input type="datetime-local" [(ngModel)]="historialClinicoSeleccionado.fecha" name="fecha" required>
+    <input type="text" [(ngModel)]="historialClinicoSeleccionado.diagnostico" name="diagnostico" required> 
+    <input type="text" [(ngModel)]="historialClinicoSeleccionado.tratamiento" name="tratamiento" required> 
+    <input type="text" [(ngModel)]="historialClinicoSeleccionado.observaciones" name="observaciones" required> 
+    <button type="submit">💾 Guardar</button>
+    <button type="button" (click)="cancelarEdicion()">❌ Cancelar</button>
+  </form>
+</div>
+</body>
+</html>

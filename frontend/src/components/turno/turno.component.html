@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div *ngIf="isAdmin || isRecepcionista || isVeterinario">
+        <h3>Lista de Turnos :</h3>
+        <li *ngFor="let turno of turnos">
+        <strong>{{ turno.fechaHora | date:'dd/MM/yyyy HH:mm' }}</strong>
+      🐶 Paciente: {{ turno.paciente.nombre }}<br>
+      🧑‍⚕️ Veterinario: {{ turno.veterinario.nombre }}<br>
+      📌 Estado: {{ turno.estado }}<br>
+      <span *ngIf="turno.notas">📝 Notas: {{ turno.notas }}</span>
+      <button *ngIf="isAdmin || isRecepcionista  || isVeterinario" (click)="editarTurno(turno)">✏️</button>
+      <button *ngIf="isAdmin" (click)="eliminarTurno(turno.id)">🗑️</button>
+</div>
+
+<!-- Botón para preparar el formulario -->
+<button *ngIf="isAdmin || isRecepcionista"  (click)="crearNuevoTurno()">➕</button>
+<button (click)="auth.logout()">🚪 Cerrar sesión</button>
+ <button (click)="auth.volverLogin()">🔙 Volver al login</button>
+<div *ngIf="turnoSeleccionado">
+  <h3>{{ formAddEdit ? 'Editar Turno' : 'Nuevo Turno' }}</h3>
+  <form (ngSubmit)="formAddEdit ? guardarTurno() : agregarTurno()">
+    <label>Fecha y hora:</label>
+   <input
+      type="datetime-local"
+      [(ngModel)]="turnoSeleccionado.fechaHora"
+      name="fechaHora"
+      required
+    />
+
+    <label>Estado:</label>
+    <input
+      type="text"
+      [(ngModel)]="turnoSeleccionado.estado"
+      name="estado"
+      required
+      [ngModelOptions]="{standalone: true}"
+    />
+
+    <label>Notas:</label>
+    <input
+      type="text"
+      [(ngModel)]="turnoSeleccionado.notas"
+      name="notas"
+      [ngModelOptions]="{standalone: true}"
+    />
+
+    <label>Paciente:</label>
+    <select
+      [(ngModel)]="turnoSeleccionado.pacienteId"
+      name="pacienteId"
+      required
+      [ngModelOptions]="{standalone: true}"
+    >
+      <option *ngFor="let p of pacientes" [value]="p.id">{{ p.nombre }}</option>
+    </select>
+
+    <label>Veterinario:</label>
+    <select
+      [(ngModel)]="turnoSeleccionado.veterinarioId"
+      name="veterinarioId"
+      required
+      [ngModelOptions]="{standalone: true}"
+    >
+      <option *ngFor="let v of veterinarios" [value]="v.id">{{ v.nombre }}</option>
+    </select>
+    <button type="submit">{{ formAddEdit ? '💾 Guardar' : '➕ Crear' }}</button>
+    <button type="button" (click)="cancelarEdicion()">❌ Cancelar</button>
+  </form>
+</div>
+</body>
+</html>

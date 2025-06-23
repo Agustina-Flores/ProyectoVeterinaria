@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body style="font-family: Arial, sans-serif; padding: 20px;">
+
+  <h2>Dashboard</h2>
+  <p>Bienvenido, tu rol es: <strong>{{ role }}</strong></p>
+
+  <h3>Opciones disponibles</h3>
+
+  <!-- Botones según el rol -->
+  <div style="margin-bottom: 20px;">
+    <!-- Admin -->
+    <div *ngIf="isAdmin">
+      <button [routerLink]="['../register']">📝 Registrar nuevo usuario</button>
+      <button [routerLink]="['../clientes']">👥 Ver Clientes</button>
+      <button [routerLink]="['../turnos']">📅 Ver Turnos</button>
+    </div>
+
+    <!-- Recepcionista -->
+    <div *ngIf="isRecepcionista">
+      <button [routerLink]="['../clientes']">👥 Ver Clientes</button>
+      <button [routerLink]="['../turnos']">📅 Ver Turnos</button>
+    </div>
+
+    <!-- Veterinario -->
+    <div *ngIf="isVeterinario">
+      <button [routerLink]="['../clientes']">👥 Ver Clientes</button>
+      <button [routerLink]="['../turnos']">📅 Ver Turnos</button>
+    </div>
+  </div>
+
+  <button (click)="logout()">🚪 Cerrar sesión</button>
+  <button (click)="auth.volverLogin()">🔙 Volver al login</button>
+
+<!-- Panel solo para Admin -->
+<div *ngIf="isAdmin">
+  <h3>Lista de usuarios registrados:</h3>
+  <li *ngFor="let usuario of usuarios">
+    {{ usuario.nombre }} ({{ usuario.email }}) - Rol: {{ usuario.rol }}
+    <button (click)="editarUsuario(usuario)">✏️</button>
+    <button (click)="eliminarUsuario(usuario.id)">🗑️</button>
+  </li>
+
+  <!-- Formulario para editar -->
+  <div *ngIf="usuarioSeleccionado">
+    <h3>Editar usuario</h3>
+    <form (ngSubmit)="guardarCambios()">
+      <input type="text" [(ngModel)]="usuarioSeleccionado.nombre" name="nombre" required>
+      <input type="email" [(ngModel)]="usuarioSeleccionado.email" name="email" required>
+      <input type="password" [(ngModel)]="usuarioSeleccionado.password" name="password" placeholder="Contraseña nueva o actual" required>
+      <select [(ngModel)]="usuarioSeleccionado.rol" name="rol" required>
+        <option>Admin</option>
+        <option>Veterinario</option>
+        <option>Recepcionista</option>
+      </select>
+      <button type="submit">💾 Guardar</button>
+      <button type="button" (click)="cancelarEdicion()">❌ Cancelar</button>
+    </form>
+  </div>
+</div>
+</body>
+</html>

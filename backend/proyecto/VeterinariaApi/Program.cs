@@ -12,7 +12,6 @@ builder.Services.AddDbContext<ApiDbContext>(options =>
    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 // 🔐 2. Configurar autenticación JWT
-
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
@@ -33,6 +32,16 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 // 🔒 3. Autorización
 builder.Services.AddAuthorization();
 
+// ✅ 🔧 CORS debe ir ANTES del Build
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowFrontend",
+        policy => policy
+            .WithOrigins("http://localhost:4200") // Angular
+            .AllowAnyMethod()
+            .AllowAnyHeader());
+});
+
 // 🧩 4. Servicios de la API (Swagger, Controllers)
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -48,14 +57,14 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseCors("AllowFrontend");
+
 app.UseHttpsRedirection();
+app.UseAuthentication();
+app.UseAuthorization();
 
-app.UseAuthentication(); // Importante: primero autenticación
-app.UseAuthorization();  // Luego autorización
-
-app.MapControllers();    // Habilita tus controladores
-
-// Mensaje simple para confirmar funcionamiento
+app.MapControllers();
 app.MapGet("/", () => "✅ API Veterinaria funcionando correctamente");
 
 app.Run();
+

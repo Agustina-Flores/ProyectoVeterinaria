@@ -21,6 +21,8 @@ namespace VeterinariaApi.Data
             modelBuilder.Entity<Usuario>()
                 .HasIndex(u => u.Email)
                 .IsUnique();
+
+
         }
     }
 }

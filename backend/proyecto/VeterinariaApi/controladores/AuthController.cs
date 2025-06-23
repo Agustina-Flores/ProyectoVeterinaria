@@ -83,7 +83,13 @@ namespace VeterinariaApi.Controllers
                 _context.Usuarios.Add(user);
                 await _context.SaveChangesAsync();
 
-                return Ok("Usuario creado");
+                return Ok(new
+                {
+                    Nombre = user.Nombre,
+                    Email = user.Email,
+                    Rol = user.Rol,
+                    mensaje = "Usuario creado correctamente"
+                });
 
             }
             catch (Exception ex)
@@ -108,7 +114,7 @@ namespace VeterinariaApi.Controllers
         }
 
         //api/auth/usuarios
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin,Recepcionista,Veterinario")]
         [HttpGet("usuarios")]
         public IActionResult ObtenerUsuarios()
         {
@@ -122,6 +128,56 @@ namespace VeterinariaApi.Controllers
                 }).ToList();
 
             return Ok(usuarios);
+        }
+
+        //api/auth/usuarios/{id}
+        [Authorize(Roles = "Admin")]
+        [HttpPut("usuarios/{id}")]
+        public async Task<IActionResult> EditarUsuarios(int id, [FromBody] RegisterDto usuarioDto)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+            try
+            {
+                var usuario = await _context.Usuarios.FindAsync(id);
+                if (usuario == null)
+                    return NotFound(new { mensaje = "Usuario no encontrado" });
+
+                var emailExiste = await _context.Usuarios
+                    .AnyAsync(u => u.Email.ToLower() == usuarioDto.Email.ToLower() && u.Id != id);
+
+                if (emailExiste)
+                    return BadRequest(new { mensaje = "Ya existe un usuario con ese email" });
+
+                usuario.Nombre = usuarioDto.Nombre;
+                usuario.Email = usuarioDto.Email;
+                usuario.Rol = usuarioDto.Rol;
+
+                await _context.SaveChangesAsync();
+
+                return Ok(new { mensaje = "Usuario actualizado correctamente", usuario });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { mensaje = "Ocurrió un error inesperado", detalle = ex.Message });
+
+            }
+
+        }
+
+        //api/auth/usuarios/{id}
+        [Authorize(Roles = "Admin")]
+        [HttpDelete("usuarios/{id}")]
+        public async Task<IActionResult> EliminarUsuario(int id)
+        {
+            var usuario = await _context.Usuarios.FindAsync(id);
+            if (usuario == null)
+                return NotFound(new { mensaje = "Usuario no encontrado" });
+
+            _context.Usuarios.Remove(usuario);
+            await _context.SaveChangesAsync();
+
+            return Ok(new { mensaje = "Usuario eliminado correctamente" });
         }
         private string GenerateJwtToken(Usuario user)
         {

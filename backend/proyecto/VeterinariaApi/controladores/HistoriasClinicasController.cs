@@ -24,7 +24,7 @@ namespace VeterinariaApi.Controllers
         }
 
         //api/historias/paciente/{id}
-        [Authorize(Roles = "Admin,Recepcionista")]
+        [Authorize(Roles = "Admin,Recepcionista,Veterinario")]
         [HttpGet("paciente/{pacienteId}")]
         public async Task<IActionResult> ObtenerHistoriasClinicas(int pacienteId)
         {
@@ -52,7 +52,7 @@ namespace VeterinariaApi.Controllers
             {
                 var historia = new HistoriaClinica
                 {
-                    Fecha = historiadto.Fecha == default ? DateTime.UtcNow : historiadto.Fecha,
+                    Fecha = historiadto.Fecha == default ? DateTime.UtcNow : DateTime.SpecifyKind(historiadto.Fecha, DateTimeKind.Utc),
                     Diagnostico = historiadto.Diagnostico,
                     Tratamiento = historiadto.Tratamiento,
                     Observaciones = historiadto.Observaciones,
@@ -66,7 +66,12 @@ namespace VeterinariaApi.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { mensaje = "Ocurrió un error inesperado", detalle = ex.Message });
+                return StatusCode(500, new
+                {
+                    mensaje = "Ocurrió un error inesperado",
+                    detalle = ex.Message,
+                    inner = ex.InnerException?.Message
+                });
             }
         }
     }
