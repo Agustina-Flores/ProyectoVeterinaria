@@ -73,7 +73,7 @@ Desarrollado con Angular (frontend) y .NET Core (backend), incluye login con con
 
 ## 🛠️ Tecnologías
 
-- Angular
-- .NET Core
-- Entity Framework
-- PostgreSQL
+- Angular.
+- .NET Core.
+- Entity Framework.
+- PostgreSQL.
