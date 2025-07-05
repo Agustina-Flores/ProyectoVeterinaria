@@ -1,0 +1,81 @@
+body, html {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  background: linear-gradient(to bottom, #f0f4f8, #ffffff);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+h4{
+  margin-bottom: 10px;
+  color: #333;
+  text-align: center;
+}
+.login-container {
+ display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background: linear-gradient(to bottom, #e8f6f3, #ffffff);
+  padding: 20px
+}
+.login-box {
+    
+  background: white;
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  max-width: 400px;
+  width: 100%;
+  text-align: center;
+}
+.titulo {
+  margin-bottom: 10px;
+  color: #333;
+}
+
+.subtitulo {
+  color: #666;
+  font-size: 1.10rem;
+  margin-bottom: 20px;
+}
+.login-form input {
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 15px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 1rem;
+}
+
+.login-form button {
+  width: 100%;
+  padding: 12px;
+  background-color: #4CAF50;
+  color: white;
+  font-weight: bold;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.login-form button:hover {
+  background-color: #45a049;
+}
+
+.error-msg {
+  color: #dc3545;
+  font-size: 0.9rem;
+  margin-bottom: 15px;
+}
+input.ng-invalid.ng-touched {
+  border: 2px solid #dc3545 !important;
+  box-shadow: 0 0 5px rgba(220, 53, 69, 0.5);
+}
+ 
+.error-msg {
+  color: #c0392b;
+  font-size: 14px;
+  margin-top: -10px;
+  margin-bottom: 10px;
+}

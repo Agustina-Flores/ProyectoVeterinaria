@@ -6,28 +6,53 @@
     <title>Document</title>
 </head>
 <body>
-   <h2>Historial Clínico del Paciente #{{ pacienteId }}</h2>
-   <ul *ngIf="historialClinico.length > 0; else sinDatos">
-        <li *ngFor="let historial of historialClinico">
-            🗓 {{ historial.fecha | date:'short' }} - 🧾 {{ historial.diagnostico }}<br>
-                💊 {{ historial.tratamiento }}<br>
-                📝 {{ historial.observaciones }}
-        </li> 
-   </ul> 
-   
-   <ng-template #sinDatos>
-     <p>No hay historial clínico para este paciente.</p>
-   </ng-template>
-   <button *ngIf="isAdmin || isRecepcionista || isVeterinario"  (click)="crearNuevoHistorial()">➕</button>
-   <button (click)="auth.logout()">🚪 Cerrar sesión</button>
-   <button (click)="auth.volverLogin()">🔙 Volver al login</button>
-   <div *ngIf="historialClinicoSeleccionado">
-  <h3>Nuevo Historial Clinico</h3>
-  <form (ngSubmit)="agregarHistorial()" #form="ngForm"> 
-    <input type="datetime-local" [(ngModel)]="historialClinicoSeleccionado.fecha" name="fecha" required>
-    <input type="text" [(ngModel)]="historialClinicoSeleccionado.diagnostico" name="diagnostico" required> 
-    <input type="text" [(ngModel)]="historialClinicoSeleccionado.tratamiento" name="tratamiento" required> 
-    <input type="text" [(ngModel)]="historialClinicoSeleccionado.observaciones" name="observaciones" required> 
+   <h2>🩺 Historial Clínico de {{ nombrePaciente }}</h2>
+   <ul *ngIf="historialClinico.length > 0; else sinDatos" class="lista-historial">
+  <li *ngFor="let historial of historialClinico">
+    <div class="fecha">🗓 {{ historial.fecha | date:'short' }} - 🧾 {{ historial.diagnostico }}</div>
+    <ul class="detalle">
+      <li>💊 Diagnóstico: {{ historial.diagnostico }}</li>
+      <li>📋 Tratamiento: {{ historial.tratamiento }}</li>
+      <li>🗒️ Observaciones: {{ historial.observaciones }}</li>
+    </ul>
+  </li>
+</ul>
+ <ng-template #sinDatos>
+  <p>No hay historial clínico para este paciente.</p>
+</ng-template>
+
+<div class="acciones">
+  <button *ngIf="isAdmin || isVeterinario" (click)="crearNuevoHistorial()">➕ Agregar historial</button>
+  <button (click)="clienteService.volverClientes()">🔙 Volver atras</button>
+</div>
+
+  <!-- Formulario nuevo historial -->
+<p class="success-msg" *ngIf="mensajeExito">✅ {{ mensajeExito }}</p>
+<div *ngIf="nuevoHistorial" class="formulario">
+  <h3>➕ Nuevo Historial Clínico</h3>
+  <form #form="ngForm" (ngSubmit)="agregarHistorial(form)"> 
+    <label>Fecha:</label>
+    <input type="datetime-local" [(ngModel)]="nuevoHistorial.fecha" name="fecha" #fechaCtrl="ngModel" required>
+        <div *ngIf="fechaInvalida  && fechaCtrl.touched" class="error-msg">
+            <b> La fecha debe ser posterior a la actual.</b>
+        </div> 
+    <label>Diagnóstico:</label>
+    <input type="text" #diagnosticoCtrl="ngModel"  [(ngModel)]="nuevoHistorial.diagnostico" name="diagnostico" pattern="^[a-zA-ZÁÉÍÓÚáéíóúñÑ\s]+$" required> 
+       <div *ngIf="diagnosticoCtrl.invalid && (diagnosticoCtrl.touched || form.submitted)" class="error-msg">
+        <b *ngIf="diagnosticoCtrl.errors?.['required']">El diagnostico es obligatorio.</b>
+        <b *ngIf="diagnosticoCtrl.errors?.['pattern']">Solo se permiten letras.</b>
+      </div>
+
+    <label>Tratamiento:</label>
+    <input type="text" #tratamientoCtrl="ngModel" [(ngModel)]="nuevoHistorial.tratamiento" name="tratamiento"  required> 
+     <div *ngIf="tratamientoCtrl.invalid && (tratamientoCtrl.touched || form.submitted)" class="error-msg">
+        <b *ngIf="tratamientoCtrl.errors?.['required']">El tratamiento es obligatorio.</b>
+      </div>  
+    <label>Observaciones:</label>
+    <input type="text" #observacionesCtrl="ngModel" [(ngModel)]="nuevoHistorial.observaciones" name="observaciones" required> 
+    <div *ngIf="observacionesCtrl.invalid &&  (observacionesCtrl.touched || form.submitted)" class="error-msg">
+        <b *ngIf="observacionesCtrl.errors?.['required']">La observaciones son obligatorio.</b>
+      </div> 
     <button type="submit">💾 Guardar</button>
     <button type="button" (click)="cancelarEdicion()">❌ Cancelar</button>
   </form>

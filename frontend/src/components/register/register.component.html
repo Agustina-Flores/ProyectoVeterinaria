@@ -1,36 +1,42 @@
-<div class="register-form">
-    <h1>Registro de Staff</h1>
-    <form (ngSubmit)="onSubmit()" #form="ngForm">
-        <input
-        type="nombre"
-        [(ngModel)]="nombre"
-        name="nombre"
-        placeholder="Nombre"
-        required
-        />
-         <input
-        type="email"
-        [(ngModel)]="email"
-        name="email"
-        placeholder="email"
-        required
-        />
-        <input
-        type="password"
-        [(ngModel)]="password"
-        name="password"
-        placeholder="Password"
-        required
-        />
-         <input
-        type="rol"
-        [(ngModel)]="rol"
-        name="rol"
-        placeholder="Rol"
-        required
-        />
-        <button type="submit" [disabled]="form.invalid">Registrar</button>
-        <button (click)="volverLogin()">🔙 Volver al login</button>
+ <!DOCTYPE html>
+ <html lang="en">
+ <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+ </head>
+ <body>
+    <div class="form-register">
+    <h1>Registro de Staff</h1> 
+        <form (ngSubmit)="onSubmit(form)" #form="ngForm">
+            <input type="text" #nombreCtrl="ngModel" [(ngModel)]="nombre" name="nombre" placeholder="Nombre" pattern="^[a-zA-ZÁÉÍÓÚáéíóúñÑ\s]+$" required />
+             <div *ngIf="nombreCtrl.invalid && nombreCtrl.touched" class="error-msg">
+                <b *ngIf="nombreCtrl.errors?.['required']">El nombre es obligatorio.</b>
+                <b *ngIf="nombreCtrl.errors?.['pattern']">Solo se permiten letras.</b>
+            </div>
+            <input type="email"  #emailCtrl="ngModel" [(ngModel)]="email" name="email" placeholder="Email" pattern="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$" required/>
+            <div *ngIf="emailCtrl.invalid && (emailCtrl.dirty || emailCtrl.touched)" class="error-msg">
+                <b *ngIf="emailCtrl.errors?.['required']">El email es obligatorio.</b>
+                <b *ngIf="emailCtrl.errors?.['email']">Formato no válido.</b>
+                <b *ngIf="emailCtrl.errors?.['pattern']">Debe ser un email válido.</b>
+            </div>
+            <input type="password" [(ngModel)]="password" name="password" placeholder="Password" #passwordRef="ngModel" required/>
+            <div *ngIf="passwordRef.invalid && passwordRef.touched" class="error-msg">
+                <b>La contraseña es obligatoria.</b>  
+            </div>
+            <select [(ngModel)]="rol" name="rol" required>
+                 <option value="" disabled selected hidden>Seleccionar rol</option>
+                <option>Admin</option>
+                <option>Veterinario</option>
+                <option>Recepcionista</option>
+            </select>
+            <button type="submit" [disabled]="form.invalid">Registrar</button>
+            <p class="success-msg" *ngIf="registroExitoso">✅ Usuario registrado con éxito.</p>
+        </form> 
+        <div class="acciones"> 
+        <button (click)="this.usuarioService.volverDashboard()">🔙 Volver al menú</button>
+        </div>
         <p class="error" *ngIf="error">{{ error }}</p>
-    </form>
 </div>
+ </body>
+ </html>

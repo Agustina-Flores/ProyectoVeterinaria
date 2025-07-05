@@ -1,67 +1,132 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
-</head>
-<body style="font-family: Arial, sans-serif; padding: 20px;">
+  </head>
+  <body class="fondo">
+    <div class="dashboard-container">
+      <div class="dashboard-box">
+        <h1 class="titulo">Panel de gestión 🐶</h1>
+        <p class="subtitulo">
+          Bienvenido, tu rol es: <strong>{{ role }}</strong>
+        </p>
 
-  <h2>Dashboard</h2>
-  <p>Bienvenido, tu rol es: <strong>{{ role }}</strong></p>
+        <h3>Opciones disponibles</h3>
 
-  <h3>Opciones disponibles</h3>
+        <div class="botones">
+          <!-- Admin -->
+          <div *ngIf="isAdmin">
+            <button [routerLink]="['../register']">
+              📝 Registrar Nuevo Usuario
+            </button>
+            <button [routerLink]="['../clientes']">👥 Ver Clientes</button>
+            <button [routerLink]="['../turnos']">📅 Ver Turnos</button>
+            <button class="btn-opcion" (click)="mostrarCambioPassword = true">
+              🔒 Cambiar contraseña
+            </button>
+          </div>
 
-  <!-- Botones según el rol -->
-  <div style="margin-bottom: 20px;">
-    <!-- Admin -->
-    <div *ngIf="isAdmin">
-      <button [routerLink]="['../register']">📝 Registrar nuevo usuario</button>
-      <button [routerLink]="['../clientes']">👥 Ver Clientes</button>
-      <button [routerLink]="['../turnos']">📅 Ver Turnos</button>
+          <!-- Recepcionista -->
+          <div *ngIf="isRecepcionista">
+            <button [routerLink]="['../clientes']">👥 Ver Clientes</button>
+            <button [routerLink]="['../turnos']">📅 Ver Turnos</button>
+            <button class="btn-opcion" (click)="mostrarCambioPassword = true">
+              🔒 Cambiar contraseña
+            </button>
+          </div>
+
+          <!-- Veterinario -->
+          <div *ngIf="isVeterinario">
+            <button [routerLink]="['../clientes']">👥 Ver Clientes</button>
+            <button [routerLink]="['../turnos']">📅 Ver Turnos</button>
+            <button class="btn-opcion" (click)="mostrarCambioPassword = true">
+              🔒 Cambiar contraseña
+            </button>
+          </div>
+        </div>
+
+        <button (click)="logout()">🚪 Cerrar sesión</button>
+        <button (click)="auth.volverLogin()">🔙 Volver al login</button>
+
+        <p class="success-msg" *ngIf="mensajeExito">✅ {{ mensajeExito }}</p>
+        <div *ngIf="mostrarCambioPassword">
+          <h4>🔑 Cambiar contraseña</h4>
+          <form (ngSubmit)="cambiarPassword()" class="cambiar-password-form">
+            <label>Contraseña actual:</label>
+            <input
+              type="password"
+              [(ngModel)]="passwordActual"
+              name="actual"
+              required
+              autocomplete="off"
+            />
+
+            <label>Nueva contraseña:</label>
+            <input
+              type="password"
+              [(ngModel)]="nuevaPassword"
+              name="nueva"
+              required
+              minlength="6"
+              autocomplete="new-password"
+            />
+
+            <div class="error-msg" *ngIf="errorPassword">
+              {{ errorPassword }}
+            </div>
+            <button type="submit" class="btn-verde">Guardar</button>
+            <button
+              type="button"
+              class="btn-rojo"
+              (click)="mostrarCambioPassword = false"
+            >
+              Cancelar
+            </button>
+          </form>
+        </div>
+        <!--Lista de usuarios solo para Admin -->
+        <div *ngIf="isAdmin">
+          <h3 class="subtitulo">Usuarios registrados</h3>
+          <div *ngFor="let usuario of usuarios" class="card-usuario">
+            <p>
+              <strong>{{ usuario.nombre }}</strong> ({{ usuario.email }}) - Rol:
+              {{ usuario.rol }}
+            </p>
+            <button (click)="editarUsuario(usuario)">✏️</button>
+            <button (click)="eliminarUsuario(usuario.id)">🗑️</button>
+          </div>
+          <!-- Formulario para editar -->
+           <p class="success-msg" *ngIf="mensajeExito">✅ {{ mensajeExito }}</p>
+          <div *ngIf="usuarioSeleccionado">
+            <h4>Editar usuario</h4>
+            <form (ngSubmit)="guardarCambios()" class="dashboard-form">
+              <input type="text"[(ngModel)]="usuarioSeleccionado.nombre" name="nombre" #usuarioCtrl="ngModel"  pattern="^[a-zA-Z\s]+$" title="Solo letras" required/>
+                <div *ngIf="usuarioCtrl.invalid && usuarioCtrl.touched" class="error-msg">
+                  <b *ngIf="usuarioCtrl.errors?.['required']">El nombre es obligatorio.</b>
+                  <b *ngIf="usuarioCtrl.errors?.['pattern']">Solo se permiten letras.</b>
+               </div>
+              <input type="email" [(ngModel)]="usuarioSeleccionado.email" name="email" #emailCtrl="ngModel" placeholder="Email" pattern="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$" required />
+                   <div *ngIf="emailCtrl.invalid && (emailCtrl.dirty || emailCtrl.touched)" class="error-msg">
+                    <b *ngIf="emailCtrl.errors?.['required']">El email es obligatorio.</b>
+                    <b *ngIf="emailCtrl.errors?.['email']">Formato no válido.</b>
+                    <b *ngIf="emailCtrl.errors?.['pattern']">Debe ser un email válido.</b>
+                  </div>
+              <select [(ngModel)]="usuarioSeleccionado.rol" name="rol" required>
+                <option [ngValue]="null" disabled selected>Seleccione un Rol</option>
+                <option>Admin</option>
+                <option>Veterinario</option>
+                <option>Recepcionista</option>
+              </select>
+              <button type="submit">💾 Guardar</button>
+              <button type="button" (click)="cancelarEdicion()">
+                ❌ Cancelar
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
     </div>
-
-    <!-- Recepcionista -->
-    <div *ngIf="isRecepcionista">
-      <button [routerLink]="['../clientes']">👥 Ver Clientes</button>
-      <button [routerLink]="['../turnos']">📅 Ver Turnos</button>
-    </div>
-
-    <!-- Veterinario -->
-    <div *ngIf="isVeterinario">
-      <button [routerLink]="['../clientes']">👥 Ver Clientes</button>
-      <button [routerLink]="['../turnos']">📅 Ver Turnos</button>
-    </div>
-  </div>
-
-  <button (click)="logout()">🚪 Cerrar sesión</button>
-  <button (click)="auth.volverLogin()">🔙 Volver al login</button>
-
-<!-- Panel solo para Admin -->
-<div *ngIf="isAdmin">
-  <h3>Lista de usuarios registrados:</h3>
-  <li *ngFor="let usuario of usuarios">
-    {{ usuario.nombre }} ({{ usuario.email }}) - Rol: {{ usuario.rol }}
-    <button (click)="editarUsuario(usuario)">✏️</button>
-    <button (click)="eliminarUsuario(usuario.id)">🗑️</button>
-  </li>
-
-  <!-- Formulario para editar -->
-  <div *ngIf="usuarioSeleccionado">
-    <h3>Editar usuario</h3>
-    <form (ngSubmit)="guardarCambios()">
-      <input type="text" [(ngModel)]="usuarioSeleccionado.nombre" name="nombre" required>
-      <input type="email" [(ngModel)]="usuarioSeleccionado.email" name="email" required>
-      <input type="password" [(ngModel)]="usuarioSeleccionado.password" name="password" placeholder="Contraseña nueva o actual" required>
-      <select [(ngModel)]="usuarioSeleccionado.rol" name="rol" required>
-        <option>Admin</option>
-        <option>Veterinario</option>
-        <option>Recepcionista</option>
-      </select>
-      <button type="submit">💾 Guardar</button>
-      <button type="button" (click)="cancelarEdicion()">❌ Cancelar</button>
-    </form>
-  </div>
-</div>
-</body>
+  </body>
 </html>

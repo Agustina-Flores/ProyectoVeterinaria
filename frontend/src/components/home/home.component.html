@@ -6,13 +6,14 @@
     <title>Home</title>
 </head>
 <body>
-<div class="home-container">
+<div class="container">
   <h1>Bienvenido al sistema veterinario 🐾</h1>
 
-  <div>
+  <div class="content">
     <button routerLink="/login">🔐 Login</button>
-    <p>(Para registrar un nuevo usuario, primero iniciá sesión como Admin)</p>
+     <p class="info">(Para registrar un nuevo usuario, primero iniciá sesión como Admin)</p>
   </div>
+  <img class="pet-img" [src]="imagenActual" alt="Mascota!" width="200" height="200">
 </div>
 </body>
 </html>

@@ -1,0 +1,149 @@
+body, html {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  background-color: #f3f4f6;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.dashboard-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background: linear-gradient(to bottom, #e8f6f3, #ffffff);
+  padding: 20px;
+}
+
+.dashboard-box {
+  background: white;
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  max-width: 600px;
+  width: 100%;
+  text-align: center;
+}
+.titulo {
+  margin-bottom: 10px;
+  color: #333;
+}
+.subtitulo {
+  color: #666;
+  font-size: 0.95rem;
+  margin-bottom: 20px;
+}
+.card-usuario {
+  background-color: #ffffff;
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.card-usuario p {
+  margin: 0 0 0.5rem 0;
+}
+
+.card-usuario button {
+  background-color: #28a745;
+  border: none;
+  color: white;
+  padding: 0.4rem 0.7rem;
+  border-radius: 4px;
+  margin-right: 0.5rem;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.card-usuario button:hover {
+  background-color: #218838;
+}
+.dashboard-form input,
+.dashboard-form select {
+  width: 90%;
+  padding: 12px;
+  margin-bottom: 15px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 1rem;
+}
+
+.dashboard-form button,
+button {
+  width: 100%;
+  padding: 12px;
+  background-color: #4CAF50;
+  color: white;
+  font-weight: bold;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  margin-top: 10px;
+  transition: background 0.3s;
+}
+
+button:hover {
+  background-color: #45a049;
+}
+
+.cambiar-password-form {
+  max-width: 400px;
+  margin: 20px auto;
+  padding: 20px;
+  background: #ffffff;
+  border-radius: 15px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+.cambiar-password-form h4 {
+  text-align: center;
+  margin-bottom: 10px;
+}
+ 
+.cambiar-password-form label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: bold;
+}
+.cambiar-password-form input {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 15px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+}
+.cambiar-password-form button {
+  width: 100%;
+  padding: 10px;
+  margin-top: 10px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 16px;
+}
+
+.cambiar-password-form button[type="submit"] {
+  background-color: #28a745;
+  color: white;
+}
+
+.cambiar-password-form button[type="button"] {
+  background-color: #dc3545;
+  color: white;
+}
+.error-msg {
+  color: #dc3545;
+  margin-bottom: 10px;
+  font-size: 0.9rem;
+}
+.success-msg {
+  background-color: #d4edda;
+  color: #155724;
+  padding: 10px 15px;
+  margin-bottom: 15px;
+  border: 1px solid #c3e6cb;
+  border-radius: 5px;
+  font-weight: bold;
+  transition: opacity 0.5s ease-in-out;
+}

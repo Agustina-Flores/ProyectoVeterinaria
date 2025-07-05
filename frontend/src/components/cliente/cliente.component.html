@@ -1,79 +1,121 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gestión de Clientes</title>
 </head>
 <body>
-   <div *ngIf="isAdmin || isRecepcionista || isVeterinario">
-   <h3>Lista de Clientes registrados:</h3>
-    <li *ngFor="let cliente of clientes">
-  {{ cliente.nombre }} ({{ cliente.email }}) - Telefono: {{ cliente.telefono }} 
-  <button *ngIf="isAdmin || isRecepcionista" (click)="editarCliente(cliente)">✏️</button>
-  <button *ngIf="isAdmin" (click)="eliminarCliente(cliente.id)">🗑️</button>
-</li>
+  <div class="contenedor-clientes" *ngIf="isAdmin || isRecepcionista || isVeterinario">
+    <h3>Lista de Clientes registrados:</h3>
 
-<!-- Botón para preparar el formulario -->
-<button *ngIf="isAdmin || isRecepcionista"  (click)="crearNuevoCliente()">➕</button>
-<div *ngIf="clienteSeleccionado">
-  <h3>{{ formAddEdit ? 'Editar Cliente' : 'Nuevo Cliente' }}</h3>
-  <form (ngSubmit)="formAddEdit ? guardarCliente() : agregarCliente()">
-    <input type="text" [(ngModel)]="clienteSeleccionado.nombre" name="nombre" required>
-    <input type="email" [(ngModel)]="clienteSeleccionado.email" name="email" required> 
-    <input type="text" [(ngModel)]="clienteSeleccionado.telefono" name="telefono" required> 
-    <button type="submit">{{ formAddEdit ? '💾 Guardar' : '➕ Crear' }}</button>
-    <button type="button" (click)="cancelarEdicion()">❌ Cancelar</button>
-  </form>
-</div>
-<li *ngFor="let cliente of clientes">
-  {{ cliente.nombre }} ({{ cliente.email }}) 
-  <button (click)="verPacientes(cliente)">🐾 Ver Mascotas</button> 
+    <ul>
+      <li class="cliente" *ngFor="let cliente of clientes">
+        <div class="cliente-header">
+          <span class="cliente-info">
+            👤 <strong>{{ cliente.nombre }}</strong> ({{ cliente.email }}) - Tel: {{ cliente.telefono }}
+          </span>
+          <div class="cliente-botones">
+            <button *ngIf="isAdmin || isRecepcionista" (click)="editarCliente(cliente)">✏️</button>
+            <button *ngIf="isAdmin" class="eliminar" (click)="eliminarCliente(cliente.id)">🗑️</button>
+            <button (click)="toggleMascotas(cliente)">
+              {{ clienteIdSeleccionado === cliente.id ? '🔼 Ocultar Mascotas' : '🐾 Ver Mascotas' }}
+            </button>
+          </div>
+        </div>
 
-  <h3 *ngIf="clienteIdSeleccionado === cliente.id">
-    🐶 Mascotas de {{ cliente.nombre }}:
-  </h3>
+        <div *ngIf="clienteIdSeleccionado === cliente.id" class="mascotas-contenedor">
+          <h4 class="titulo-mascotas">🐶 Mascotas de {{ cliente.nombre }}</h4>
 
-  <!-- Sección visible solo si se seleccionó este cliente -->
-  <div *ngIf="clienteIdSeleccionado === cliente.id">
-    
-    <!-- ✅ Botón para agregar mascota SIEMPRE visible si hay permisos -->
-    <div *ngIf="isAdmin || isRecepcionista || isVeterinario">
-      <button (click)="crearNuevoPaciente()">➕ Agregar mascota</button>
-    </div>
+          <button *ngIf="isAdmin || isRecepcionista || isVeterinario" class="btn-agregar-mascota" (click)="crearNuevoPaciente()">➕ Agregar mascota</button>
 
-    <!-- Lista de mascotas -->
-    <ul *ngIf="pacientesDelCliente.length > 0">
-      <li *ngFor="let paciente of pacientesDelCliente">
-        {{ paciente.nombre }} ({{ paciente.edad }}) - Raza: {{ paciente.raza }} - Especie: {{ paciente.especie }}
-        
-        <button *ngIf="isAdmin || isRecepcionista || isVeterinario" (click)="editarPaciente(paciente)">✏️</button> 
-        <button *ngIf="isAdmin" (click)="eliminarPaciente(paciente)">🗑️</button>
-         <button (click)="verHistorial(paciente.id)">📋 Historial Clínico</button>
+          <ul *ngIf="pacientesDelCliente.length > 0" class="lista-mascotas">
+            <li class="item-mascota" *ngFor="let paciente of pacientesDelCliente">
+              <strong class="nombre-mascota">{{ paciente.nombre }} ({{ paciente.edad }} años)</strong><br>
+              <span>Raza: {{ paciente.raza }}</span> - 
+              <span>Especie: {{ paciente.especie }}</span>
+
+              <div class="acciones-mascota">
+                <button *ngIf="isAdmin || isRecepcionista || isVeterinario" (click)="editarPaciente(paciente)">✏️</button>
+                <button *ngIf="isAdmin" class="eliminar" (click)="eliminarPaciente(paciente)">🗑️</button>
+                <button (click)="verHistorial(paciente.id)">📋</button>
+              </div>
+            </li>
+          </ul>
+
+          <p *ngIf="pacientesDelCliente.length === 0" class="mensaje-vacio">No tiene mascotas registradas.</p>
+
+          <p class="success-msg" *ngIf="mensajeExitoPaciente">✅ {{ mensajeExitoPaciente }}</p>
+
+          <div *ngIf="pacienteSeleccionado" class="formulario-mascota">
+            <h4>{{ formAddEdit ? 'Editar Paciente' : 'Nuevo Paciente' }}</h4>
+            <form #form="ngForm" (ngSubmit)="formAddEdit ? guardarPaciente(form) : agregarPaciente(form)">
+              <input type="text" [(ngModel)]="pacienteSeleccionado.nombre" name="nombre" placeholder="Nombre del paciente" pattern="^[a-zA-Z\s]+$" title="Solo letras" required #pacienteCtrl="ngModel" />
+              <div *ngIf="pacienteCtrl.invalid && pacienteCtrl.touched" class="error-msg">
+                <b *ngIf="pacienteCtrl.errors?.['required']">El nombre es obligatorio.</b>
+                <b *ngIf="pacienteCtrl.errors?.['pattern']">Solo se permiten letras.</b>
+              </div>
+
+              <input type="number" [(ngModel)]="pacienteSeleccionado.edad" name="edad" placeholder="Edad" min="0" required #edadCtrl="ngModel" />
+              <div *ngIf="edadCtrl.invalid && edadCtrl.touched" class="error-msg">
+                <b *ngIf="edadCtrl.errors?.['required']">La edad es obligatoria.</b>
+                <b *ngIf="edadCtrl.errors?.['min']">La edad no puede ser negativa.</b>
+              </div>
+
+              <input type="text" [(ngModel)]="pacienteSeleccionado.raza" name="raza" placeholder="Raza" pattern="^[a-zA-Z\s]+$" title="Solo letras" required #razaCtrl="ngModel" />
+              <div *ngIf="razaCtrl.invalid && razaCtrl.touched" class="error-msg">
+                <b *ngIf="razaCtrl.errors?.['required']">La raza es obligatoria.</b>
+                <b *ngIf="razaCtrl.errors?.['pattern']">Solo se permiten letras.</b>
+              </div>
+
+              <input type="text" [(ngModel)]="pacienteSeleccionado.especie" name="especie" placeholder="Especie" pattern="^[a-zA-Z\s]+$" title="Solo letras" required #especieCtrl="ngModel" />
+              <div *ngIf="especieCtrl.invalid && especieCtrl.touched" class="error-msg">
+                <b *ngIf="especieCtrl.errors?.['required']">La especie es obligatoria.</b>
+                <b *ngIf="especieCtrl.errors?.['pattern']">Solo se permiten letras.</b>
+              </div>
+
+              <button type="submit">{{ formAddEdit ? '💾 Guardar' : '➕ Crear' }}</button>
+              <button type="button" class="cancelar" (click)="cancelarEdicion()">❌ Cancelar</button>
+            </form>
+          </div>
+        </div>
       </li>
     </ul>
 
-    <!-- Mensaje si no hay mascotas -->
-    <p *ngIf="pacientesDelCliente.length === 0">No tiene mascotas registradas.</p>
+    <p class="success-msg" *ngIf="mensajeExitoCliente">✅ {{ mensajeExitoCliente }}</p>
 
-    <!-- Formulario para agregar o editar -->
-    <div *ngIf="pacienteSeleccionado">
-      <h3>{{ formAddEdit ? 'Editar Paciente' : 'Nuevo Paciente' }}</h3>
-      <form (ngSubmit)="formAddEdit ? guardarPaciente() : agregarPaciente()">
-        <input type="text" [(ngModel)]="pacienteSeleccionado.nombre" name="nombre" required>
-        <input type="text" [(ngModel)]="pacienteSeleccionado.edad" name="edad" required> 
-        <input type="text" [(ngModel)]="pacienteSeleccionado.raza" name="raza" required> 
-        <input type="text" [(ngModel)]="pacienteSeleccionado.especie" name="especie" required> 
-        <button type="submit">{{ formAddEdit ? '💾 Guardar' : '➕ Crear' }}</button>
-        <button type="button" (click)="cancelarEdicion()">❌ Cancelar</button>
+    <div *ngIf="clienteSeleccionado" class="formulario-cliente">
+      <h3>{{ formAddEdit ? 'Editar Cliente' : 'Nuevo Cliente' }}</h3>
+      <form #form="ngForm" (ngSubmit)="formAddEdit ? guardarCliente(form) : agregarCliente(form)">
+        <input type="text" [(ngModel)]="clienteSeleccionado.nombre" name="nombre" placeholder="Nombre" pattern="^[a-zA-Z\s]+$" title="Solo letras" required #nombreCtrl="ngModel" />
+        <div *ngIf="nombreCtrl.invalid && nombreCtrl.touched" class="error-msg">
+          <b *ngIf="nombreCtrl.errors?.['required']">El nombre es obligatorio.</b>
+          <b *ngIf="nombreCtrl.errors?.['pattern']">Solo se permiten letras.</b>
+        </div>
+
+        <input type="email" [(ngModel)]="clienteSeleccionado.email" name="email" placeholder="Email" pattern="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$" required #emailCtrl="ngModel" />
+        <div *ngIf="emailCtrl.invalid && (emailCtrl.dirty || emailCtrl.touched)" class="error-msg">
+          <b *ngIf="emailCtrl.errors?.['required']">El email es obligatorio.</b>
+          <b *ngIf="emailCtrl.errors?.['pattern']">Debe ser un email válido.</b>
+        </div>
+
+        <input type="text" [(ngModel)]="clienteSeleccionado.telefono" name="telefono" placeholder="Teléfono" pattern="^[0-9]+$" required #telefonoCtrl="ngModel" />
+        <div *ngIf="telefonoCtrl.invalid && telefonoCtrl.touched" class="error-msg">
+          <b *ngIf="telefonoCtrl.errors?.['required']">El teléfono es obligatorio.</b>
+          <b *ngIf="telefonoCtrl.errors?.['pattern']">Solo se permiten números.</b>
+        </div>
+
+        <div class="botones-form">
+          <button type="submit">{{ formAddEdit ? '💾 Guardar' : '➕ Crear' }}</button>
+          <button type="button" (click)="cancelarEdicion()">❌ Cancelar</button>
+        </div>
       </form>
     </div>
 
+    <div class="acciones">
+      <button *ngIf="isAdmin || isRecepcionista" class="btn-agregar" (click)="crearNuevoCliente()">➕ Agregar nuevo cliente</button>
+      <button (click)="usuarioService.volverDashboard()">🔙 Volver al menú</button>
+    </div>
   </div>
-</li>
-  <br>
-    <button (click)="logout()">🚪 Cerrar sesión</button>
-   <button (click)="auth.volverLogin()">🔙 Volver al login</button>
-   </div>
 </body>
 </html>
