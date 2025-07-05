@@ -1,59 +1,79 @@
-# Frontend
+# 🐾 Sistema de Gestión Veterinaria
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 19.2.10.
+Proyecto en desarrollo para la gestión integral de una clínica veterinaria.  
+Desarrollado con Angular (frontend) y .NET Core (backend), incluye login con control de roles (admin, recepcionista, veterinario).
 
-## Development server
+## 🎯 Funcionalidades principales
 
-To start a local development server, run:
+- Inicio de sesión (login)
+- Cambio de contraseña
+- Registro y gestión de clientes y mascotas
+- Agenda de turnos
+- Historial Clinico
+- Control de acceso por tipo de usuario (Admin, Recepcionista, Veterinario)
+- Diseño responsive
 
-```bash
-ng serve
-```
+## 🖼️ Capturas
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+### 🏠 Vista Home – Cambio de mascotas por cliente
 
-## Code scaffolding
+<img src="./src/assets/capturas/home.gif" width="600"/>
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+### Vista Admin
 
-```bash
-ng generate component component-name
-```
+![Vista Admin](./src/assets/capturas/admin.gif)
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+### Vista Recepcionista
 
-```bash
-ng generate --help
-```
+![Vista Recepcionista](./src/assets/capturas/recepcionista.gif)
 
-## Building
+### Vista Veterinario
 
-To build the project run:
+![Vista Veterinario](./src/assets/capturas/veterinario.gif)
 
-```bash
-ng build
-```
+## 📋 Autorización – Permisos por rol
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+| Recurso / Acción            | Admin | Recepcionista | Veterinario |
+| --------------------------- | :---: | :-----------: | :---------: |
+| **🔐 Autenticación**        |       |               |             |
+| Login                       |  ✅   |      ✅       |     ✅      |
+| Registro de usuarios        |  ✅   |      🔒       |     🔒      |
+| Dashboard (acceso)          |  ✅   |      ✅       |     ✅      |
+| Obtener usuarios            |  ✅   |      🔒       |     🔒      |
+| Editar usuarios             |  ✅   |      🔒       |     🔒      |
+| Eliminar usuarios           |  ✅   |      🔒       |     🔒      |
+| Cambiar contraseña          |  ✅   |      ✅       |     ✅      |
+|                             |       |               |             |
+| **👥 Clientes**             |       |               |             |
+| Obtener clientes            |  ✅   |      ✅       |     ✅      |
+| Agregar cliente             |  ✅   |      ✅       |     🔒      |
+| Editar cliente              |  ✅   |      ✅       |     🔒      |
+| Eliminar cliente            |  ✅   |      🔒       |     🔒      |
+|                             |       |               |             |
+| **📄 Historial Clínico**    |       |               |             |
+| Ver historial clínico       |  ✅   |      ✅       |     ✅      |
+| Crear historial clínico     |  ✅   |      🔒       |     ✅      |
+|                             |       |               |             |
+| **📆 Turnos**               |       |               |             |
+| Obtener turnos              |  ✅   |      ✅       |     ✅      |
+| Crear turno                 |  ✅   |      ✅       |     🔒      |
+| Editar turno                |  ✅   |      ✅       |     ✅      |
+| Eliminar turno              |  ✅   |      🔒       |     🔒      |
+|                             |       |               |             |
+| **🐾 Pacientes (Mascotas)** |       |               |             |
+| Obtener pacientes           |  ✅   |      ✅       |     ✅      |
+| Crear paciente              |  ✅   |      ✅       |     ✅      |
+| Editar paciente             |  ✅   |      ✅       |     ✅      |
+| Eliminar paciente           |  ✅   |      🔒       |     🔒      |
 
-## Running unit tests
+## 🧪 Demo
 
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
+🔗 Video demostrativo con login y funcionalidades por rol:  
+[https://youtu.be/tu-link](https://youtu.be/tu-link)
 
-```bash
-ng test
-```
+## 🛠️ Tecnologías
 
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+- Angular
+- .NET Core
+- Entity Framework
+- PostgreSQL
