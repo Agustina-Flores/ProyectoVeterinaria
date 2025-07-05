@@ -17,19 +17,19 @@ Desarrollado con Angular (frontend) y .NET Core (backend), incluye login con con
 
 ### 🏠 Vista Home – Cambio de mascotas por cliente
 
-<img src="./src/assets/capturas/home.gif" width="600"/>
+<img src="./frontend/src/assets/capturas/home.gif" width="600"/>
 
 ### Vista Admin
 
-![Vista Admin](./src/assets/capturas/admin.gif)
+![Vista Admin](./frontend/src/assets/capturas/admin.gif)
 
 ### Vista Recepcionista
 
-![Vista Recepcionista](./src/assets/capturas/recepcionista.gif)
+![Vista Recepcionista](./frontend/src/assets/capturas/recepcionista.gif)
 
 ### Vista Veterinario
 
-![Vista Veterinario](./src/assets/capturas/veterinario.gif)
+![Vista Veterinario](/frontend/src/assets/capturas/veterinario.gif)
 
 ## 📋 Autorización – Permisos por rol
 
