@@ -1,7 +1,9 @@
 # 🐾 Sistema de Gestión Veterinaria
 
 Proyecto en desarrollo para la gestión integral de una clínica veterinaria.  
-Desarrollado con Angular (frontend) y .NET Core (backend), incluye login con control de roles (admin, recepcionista, veterinario).
+Desarrollado con **Angular** (frontend) y **.NET Core** (backend), incluye login con control de roles (**Admin**, **Recepcionista**, **Veterinario**).
+
+---
 
 ## 🎯 Funcionalidades principales
 
@@ -9,9 +11,11 @@ Desarrollado con Angular (frontend) y .NET Core (backend), incluye login con con
 - Cambio de contraseña
 - Registro y gestión de clientes y mascotas
 - Agenda de turnos
-- Historial Clinico
+- Historial clínico
 - Control de acceso por tipo de usuario (Admin, Recepcionista, Veterinario)
 - Diseño responsive
+
+---
 
 ## 🖼️ Capturas
 
@@ -19,17 +23,19 @@ Desarrollado con Angular (frontend) y .NET Core (backend), incluye login con con
 
 <img src="./frontend/src/assets/capturas/home.gif" width="600"/>
 
-### Vista Admin
+### 🧑‍💼 Vista Admin
 
-![Vista Admin](./frontend/src/assets/capturas/admin.gif)
+<img src="./frontend/src/assets/capturas/admin.gif" width="600"/>
 
-### Vista Recepcionista
+### 📋 Vista Recepcionista
 
-![Vista Recepcionista](./frontend/src/assets/capturas/recepcionista.gif)
+<img src="./frontend/src/assets/capturas/recepcionista.gif" width="600"/>
 
-### Vista Veterinario
+### 🩺 Vista Veterinario
 
-![Vista Veterinario](/frontend/src/assets/capturas/veterinario.gif)
+<img src="./frontend/src/assets/capturas/veterinario.gif" width="600"/>
+
+---
 
 ## 📋 Autorización – Permisos por rol
 
@@ -43,37 +49,37 @@ Desarrollado con Angular (frontend) y .NET Core (backend), incluye login con con
 | Editar usuarios             |  ✅   |      🔒       |     🔒      |
 | Eliminar usuarios           |  ✅   |      🔒       |     🔒      |
 | Cambiar contraseña          |  ✅   |      ✅       |     ✅      |
-|                             |       |               |             |
 | **👥 Clientes**             |       |               |             |
 | Obtener clientes            |  ✅   |      ✅       |     ✅      |
 | Agregar cliente             |  ✅   |      ✅       |     🔒      |
 | Editar cliente              |  ✅   |      ✅       |     🔒      |
 | Eliminar cliente            |  ✅   |      🔒       |     🔒      |
-|                             |       |               |             |
 | **📄 Historial Clínico**    |       |               |             |
 | Ver historial clínico       |  ✅   |      ✅       |     ✅      |
 | Crear historial clínico     |  ✅   |      🔒       |     ✅      |
-|                             |       |               |             |
 | **📆 Turnos**               |       |               |             |
 | Obtener turnos              |  ✅   |      ✅       |     ✅      |
 | Crear turno                 |  ✅   |      ✅       |     🔒      |
 | Editar turno                |  ✅   |      ✅       |     ✅      |
 | Eliminar turno              |  ✅   |      🔒       |     🔒      |
-|                             |       |               |             |
 | **🐾 Pacientes (Mascotas)** |       |               |             |
 | Obtener pacientes           |  ✅   |      ✅       |     ✅      |
 | Crear paciente              |  ✅   |      ✅       |     ✅      |
 | Editar paciente             |  ✅   |      ✅       |     ✅      |
 | Eliminar paciente           |  ✅   |      🔒       |     🔒      |
 
+---
+
 ## 🧪 Demo
 
 🔗 Video demostrativo con login y funcionalidades por rol:  
 [https://youtu.be/tu-link](https://youtu.be/tu-link)
 
+---
+
 ## 🛠️ Tecnologías
 
-- Angular.
-- .NET Core.
-- Entity Framework.
-- PostgreSQL.
+- Angular
+- .NET Core
+- Entity Framework
+- PostgreSQL
