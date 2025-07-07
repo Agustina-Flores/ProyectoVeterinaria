@@ -9,6 +9,7 @@ using System.IdentityModel.Tokens.Jwt;
 using VeterinariaApi.Data;
 using VeterinariaApi.Models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 namespace VeterinariaApi.Controllers
 {
 
@@ -41,7 +42,16 @@ namespace VeterinariaApi.Controllers
                     return Unauthorized("Credenciales inválidas");
 
                 var token = GenerateJwtToken(user);
-                return Ok(new { token });
+                return Ok(new
+                {
+                    token,
+                    usuario = new
+                    {
+                        user.Nombre,
+                        user.Email,
+                        user.Rol
+                    }
+                });
             }
             catch (Exception ex)
             {
@@ -114,7 +124,7 @@ namespace VeterinariaApi.Controllers
         }
 
         //api/auth/usuarios
-        [Authorize(Roles = "Admin,Recepcionista,Veterinario")]
+        [Authorize(Roles = "Admin")]
         [HttpGet("usuarios")]
         public IActionResult ObtenerUsuarios()
         {
@@ -133,7 +143,7 @@ namespace VeterinariaApi.Controllers
         //api/auth/usuarios/{id}
         [Authorize(Roles = "Admin")]
         [HttpPut("usuarios/{id}")]
-        public async Task<IActionResult> EditarUsuarios(int id, [FromBody] RegisterDto usuarioDto)
+        public async Task<IActionResult> EditarUsuarios(int id, [FromBody] EditarUsuarioDto usuarioDto)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -154,7 +164,7 @@ namespace VeterinariaApi.Controllers
                 usuario.Rol = usuarioDto.Rol;
 
                 await _context.SaveChangesAsync();
-
+                Console.WriteLine($"Nombre: {usuarioDto.Nombre}, Email: {usuarioDto.Email}, Rol: {usuarioDto.Rol}");
                 return Ok(new { mensaje = "Usuario actualizado correctamente", usuario });
             }
             catch (Exception ex)
@@ -201,5 +211,47 @@ namespace VeterinariaApi.Controllers
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
 
+        [Authorize(Roles = "Admin,Recepcionista,Veterinario")]
+        [HttpPut("usuarios/cambiar-password/{email}")]
+        public async Task<IActionResult> CambiarPassword(string email, [FromBody] CambiarContraseniaDto dto)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var usuario = await _context.Usuarios.FirstOrDefaultAsync(u => u.Email.ToLower() == email.ToLower());
+            if (usuario == null)
+                return NotFound(new { mensaje = "Usuario no encontrado" });
+
+
+            if (!BCrypt.Net.BCrypt.Verify(dto.PasswordActual, usuario.PasswordHash))
+                return BadRequest(new { mensaje = "La contraseña actual no es correcta" });
+
+            usuario.PasswordHash = BCrypt.Net.BCrypt.HashPassword(dto.NuevaPassword);
+            await _context.SaveChangesAsync();
+
+            // Hash nueva contraseña y guardar
+            usuario.PasswordHash = BCrypt.Net.BCrypt.HashPassword(dto.NuevaPassword);
+            await _context.SaveChangesAsync();
+
+            return Ok(new { mensaje = "Contraseña actualizada correctamente" });
+        }
+
+        //api/auth/veterinarios
+        [Authorize(Roles = "Admin,Recepcionista")]
+        [HttpGet("veterinarios")]
+        public IActionResult GetVeterinarios()
+        {
+            var veterinarios = _context.Usuarios
+                .Where(u => u.Rol == "Veterinario")
+                .Select(u => new
+                {
+                    u.Id,
+                    u.Nombre,
+                    u.Email
+                })
+                .ToList();
+
+            return Ok(veterinarios);
+        }
     }
 }

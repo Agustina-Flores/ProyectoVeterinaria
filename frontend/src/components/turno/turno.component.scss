@@ -1,0 +1,183 @@
+.contenedor-turno {
+  padding: 1.5rem;
+  background-color: #f9f9f9;
+  border-radius: 12px;
+  margin: 1rem;
+} 
+.lista-turnos {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+h2,h3 {
+  color: #2c3e50;
+  margin-bottom: 1rem;
+  font-size: 1.6rem;
+  text-align: center;
+}
+ 
+.turno {
+  background-color: #f9f9f9;
+  margin: 12px 0;
+  padding: 15px;
+  border-radius: 10px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  font-family: 'Segoe UI', sans-serif;
+}
+
+.fecha-paciente {
+  font-weight: bold;
+  font-size: 1.1rem;
+  color: #2c3e50;
+  margin-bottom: 5px;
+}
+.detalle-turno {
+  margin-left: 10px;
+  font-size: 0.95rem;
+  color: #333;
+}
+.acciones-turno {
+  margin-top: 8px;
+}
+
+.acciones-turno button {
+  margin-right: 5px;
+  padding: 5px 10px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+.acciones-turno button:first-child {
+  background-color: #f1c40f;
+}
+
+.acciones-turno button:last-child {
+  background-color: #e74c3c;
+  color: white;
+}
+.estado {
+  padding: 2px 6px;
+  border-radius: 5px;
+  font-weight: 600;
+}
+
+.Atendido {
+  color: green;
+}
+
+.Cancelado {
+  color: red;
+}
+
+.Pendiente {
+  color: #e67e22;
+} 
+form {
+  background: #ffffff;
+  border: 2px solid #c3e6cb;
+  padding: 20px 25px;
+  border-radius: 12px;
+  box-shadow: 0 3px 12px rgba(0,0,0,0.1);
+  margin-top: 15px;
+} 
+.form-turno label {
+  display: block;
+  margin-top: 12px;
+  text-align: left;
+  font-weight: bold;
+  color: #2c3e50;
+}
+.form-turno input[type="text"],
+.form-turno input[type="email"],
+.form-turno input[type="datetime-local"] {
+  width: 100%;
+  padding: 12px;
+  margin: 8px 0;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  box-sizing: border-box;
+}
+form button {
+  width: 100%;
+  padding: 12px;
+  background-color: #4CAF50;
+  border: none;
+  color: white;
+  font-weight: 600;
+  border-radius: 7px;
+  cursor: pointer;
+  margin-top: 10px;
+  transition: background-color 0.3s;
+}
+
+form button:hover {
+  background-color: #45a049;
+}
+.form-turno select {
+  width: 100%;
+  padding: 12px;
+  margin: 8px 0;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  box-sizing: border-box;
+  font-size: 1rem;
+}
+.botones-form button {
+  flex: 1;
+  padding: 10px;
+  font-weight: bold;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+}
+.botones-form button:first-child {
+  background-color: #4CAF50;
+  color: white;
+}
+.botones-form button:last-child {
+  background-color: #e74c3c;
+  color: white;
+}
+input.ng-invalid.ng-touched {
+  border: 2px solid #dc3545 !important;
+  box-shadow: 0 0 5px rgba(220, 53, 69, 0.5);
+}
+
+button.cancelar {
+  background-color: #777;
+  margin-top: 10px;
+}
+
+button.cancelar:hover {
+  background-color: #555;
+}
+.acciones button {
+  margin: 5px;
+  padding: 8px 14px;
+  border: none;
+  border-radius: 5px;
+  background-color: #3498db;
+  color: white;
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out;
+}
+
+.acciones button:hover {
+  background-color: #2980b9;
+}
+.error-msg {
+  color: #dc3545;
+  font-size: 0.85rem;
+  margin-bottom: 15px;
+}
+.success-msg {
+  background-color: #d4edda;
+  color: #155724;
+  padding: 10px 15px;
+  margin-bottom: 15px;
+  border: 1px solid #c3e6cb;
+  border-radius: 5px;
+  font-weight: bold;
+  transition: opacity 0.5s ease-in-out;
+}

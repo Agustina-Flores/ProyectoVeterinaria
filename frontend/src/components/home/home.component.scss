@@ -1,0 +1,55 @@
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Segoe UI', sans-serif;
+background:#f0f4f8;
+}
+ .container {
+  min-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center; 
+  align-items: center;   
+  text-align: center;
+  padding: 20px;
+}
+h1 {
+  font-size: 2.4rem;
+  color: #222;
+  margin-bottom: 20px;
+}
+button {
+  background-color: #f5f5f5;
+  border: 1px solid #ccc;
+  padding: 8px 16px;
+  font-size: 1rem;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+button:hover {
+  background-color: #ddd;
+}
+
+.info {
+  margin-top: 18px;
+  font-size: 1.10rem;
+  color: #555;
+}
+
+ .pet-img {
+  position: fixed;
+  bottom: 10px;
+  right: 10px;
+  width: 160px;
+  height: auto;
+  z-index: 1000;
+}
+
+@keyframes saludo {
+  0%, 100% { transform: rotate(0deg); }
+  50% { transform: rotate(-10deg); }
+}
+img.pet-img {
+  animation: saludo 2s infinite;
+}

@@ -1,8 +1,12 @@
 import { Component } from '@angular/core';
-import { AuthService } from '../../services/auth.service';
+import { AuthService } from '../../services/auth/auth.service';
+import { UsuarioService } from '../../services/usuario/usuario.service';
+import { ClienteService } from '../../services/cliente/cliente.service';
 import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common'; 
+import { PacienteService } from '../../services/paciente/paciente.service';
+import { NgForm } from '@angular/forms';
 
 @Component({
   selector: 'app-cliente',
@@ -25,10 +29,17 @@ cliente: any[] = [];
 pacientesDelCliente: any[] = [];
 clienteIdSeleccionado: number | null = null;
 clienteParaPaciente: any = null;
+mensajeExitoPaciente: string = '';
+mensajeExitoCliente: string = '';
 
- constructor(public auth: AuthService, private router: Router) {}
+ constructor(public clienteService: ClienteService, 
+  public pacienteService: PacienteService,
+  public usuarioService:UsuarioService,
+  public auth: AuthService,
+  private router: Router) {}
 
   ngOnInit(): void {
+    
       if (!this.auth.isLoggedIn()) {
         this.router.navigate(['/login']);
         return;
@@ -45,7 +56,7 @@ clienteParaPaciente: any = null;
     } 
 
     obtenerClientes(): void {
-    this.auth.obtenerClientes().subscribe({
+    this.clienteService.obtenerClientes().subscribe({
       next: (data) => this.clientes = data,
       error: (err) => console.error('Error al obtener clientes:', err)
     });
@@ -59,20 +70,31 @@ clienteParaPaciente: any = null;
     }
    
 
-    agregarCliente(): void {
+    agregarCliente(form:NgForm): void {
+
+   if (form.invalid) {
+      Object.values(form.controls).forEach(control => control.markAsTouched());
+      return;
+    }
+
     if (!this.clienteSeleccionado) return;
     const nuevoCliente = this.clienteSeleccionado;
 
-    this.auth.agregarClientes(nuevoCliente.nombre, nuevoCliente.email, nuevoCliente.telefono).subscribe({
+    this.clienteService.agregarClientes(nuevoCliente.nombre, nuevoCliente.email, nuevoCliente.telefono).subscribe({
       next: (res) => {
         console.log('Cliente registrado:', res);  
+        this.mensajeExitoCliente = 'Cliente registrado correctamente.'; 
+         setTimeout(() => {
+          this.clienteSeleccionado = null;
+          this.mensajeExitoCliente = '';
+        }, 1500);
         this.obtenerClientes();  
         this.clienteSeleccionado = null; 
         this.formAddEdit = false;
       },
       error: (err) => console.error('Error al agregar el cliente:', err)
     });
-  } 
+    } 
 
     editarCliente(cliente: any) {
       this.clienteSeleccionado = { ...cliente }; 
@@ -81,8 +103,8 @@ clienteParaPaciente: any = null;
     } 
    
     eliminarCliente(id: number){
-      if (confirm('¿Estás segura de que querés eliminar este cliente?')) {
-      this.auth.eliminarCliente(id).subscribe({
+      if (confirm('¿Estás seguro de eliminar este cliente?')) {
+      this.clienteService.eliminarCliente(id).subscribe({
         next: (res) => {
           this.obtenerClientes();
         },
@@ -96,34 +118,52 @@ clienteParaPaciente: any = null;
       console.log("mascota a editar" , this.pacienteSeleccionado);
     } 
     eliminarPaciente(paciente: any) {
-    if (confirm('¿Estás segura de que querés eliminar este paciente?')) {
+    if (confirm('¿Estás seguro de eliminar este paciente?')) {
       console.log("paciente a eliminar" , paciente);
-      this.auth.eliminarPaciente(paciente.id).subscribe({
+      this.pacienteService.eliminarPaciente(paciente.id).subscribe({
         next: (res) => {
           console.log("Paciente eliminado", res);
           this.pacienteSeleccionado = res;
-          this.verPacientes({ id: this.clienteIdSeleccionado }); 
+          this.verPacientesDeUnCliente({ id: this.clienteIdSeleccionado }); 
           this.pacienteSeleccionado = null; 
         },
         error: (err) => console.error('Error al eliminar cliente:', err)
       });
     }
     }
-    guardarPaciente() {
+    guardarPaciente(form:NgForm) {
+         
+      if (form.invalid) {
+        Object.values(form.controls).forEach(control => control.markAsTouched());
+        return;
+      }
+ 
       console.log('Datos a enviar:', this.pacienteSeleccionado); 
-      this.auth.editarPaciente(this.pacienteSeleccionado.id, this.pacienteSeleccionado).subscribe({
-      next: (res) => {
-        console.log('Cliente actualizado:', res);
-        this.pacienteSeleccionado = res;
-        this.verPacientes(this.pacienteSeleccionado);  
+      this.pacienteService.editarPaciente(this.pacienteSeleccionado.id, this.pacienteSeleccionado).subscribe({
+      next: (res) => { 
+        console.log('Paciente actualizado:', res);
+        this.mensajeExitoPaciente = 'Paciente actualizado correctamente.'; 
+        if (this.clienteParaPaciente?.id) {
+        this.verPacientesDeUnCliente(this.clienteParaPaciente);
+        } else {
+          console.warn('No hay cliente seleccionado para refrescar mascotas');
+        }
         console.log('Cer PacientesCliente actualizado:', this.pacienteSeleccionado);
-        this.pacienteSeleccionado = null;
+          setTimeout(() => {
+          this.pacienteSeleccionado = null;
+          this.mensajeExitoPaciente = '';
+        }, 1500);
       },
       error: (err) => console.error('Error al editar cliente:', err)
       });
     }
 
-    agregarPaciente(): void {
+    agregarPaciente(form:NgForm): void {
+
+    if (form.invalid) {
+      Object.values(form.controls).forEach(control => control.markAsTouched());
+      return;
+    }
     if (!this.pacienteSeleccionado || !this.clienteIdSeleccionado) return;
 
     const nuevoPaciente = {
@@ -131,33 +171,60 @@ clienteParaPaciente: any = null;
       clienteId: this.clienteIdSeleccionado 
     };
 
-    this.auth.agregarPacientes(nuevoPaciente).subscribe({
+    this.pacienteService.agregarPacientes(nuevoPaciente).subscribe({
       next: (res) => {
         console.log('Paciente registrado:', res);  
-        this.verPacientes({ id: this.clienteIdSeleccionado });  
-        console.log('Paciente registrado nuevo:', nuevoPaciente);  
+        this.verPacientesDeUnCliente({ id: this.clienteIdSeleccionado });  
+        console.log('Paciente registrado nuevo:', nuevoPaciente); 
+         this.mensajeExitoPaciente = 'Paciente registrado correctamente.'; 
+          setTimeout(() => {
+          this.pacienteSeleccionado = null;
+          this.mensajeExitoPaciente = '';
+        }, 1500); 
         this.pacienteSeleccionado = null; 
         this.formAddEdit = false;
       },
       error: (err) => console.error('Error al agregar el paciente:', err)
     });
     } 
-    guardarCliente() {
+    guardarCliente(form:NgForm) {
+
+               
+      if (form.invalid) {
+        Object.values(form.controls).forEach(control => control.markAsTouched());
+        return;
+      }
+      
       console.log('Datos a enviar:', this.clienteSeleccionado); 
-      this.auth.editarCliente(this.clienteSeleccionado.id, this.clienteSeleccionado).subscribe({
+      this.clienteService.editarCliente(this.clienteSeleccionado.id, this.clienteSeleccionado).subscribe({
       next: (res) => {
         console.log('Cliente actualizado:', res);
+         this.mensajeExitoCliente = 'Cliente actualizado correctamente.'; 
+          setTimeout(() => {
+          this.clienteSeleccionado = null;
+          this.mensajeExitoCliente = '';
+        }, 1500);
         this.obtenerClientes();  
         this.clienteSeleccionado = null;
       },
       error: (err) => console.error('Error al editar cliente:', err)
       });
     }
-
-    verPacientes(cliente: any) {
+    toggleMascotas(cliente: any) {
+    if (this.clienteIdSeleccionado === cliente.id) {
+      // Ya estaba seleccionado → lo ocultamos
+      this.clienteIdSeleccionado = null;
+      this.pacientesDelCliente = [];
+      this.pacienteSeleccionado = null;
+    } else {
+      // No estaba seleccionado → lo mostramos
+      this.verPacientesDeUnCliente(cliente);
+    }
+   }
+    verPacientesDeUnCliente(cliente: any) {
     this.clienteIdSeleccionado = cliente.id;
     this.clienteParaPaciente = cliente;
-    this.auth.getPacientesPorCliente(cliente.id).subscribe({
+    this.pacienteService.getPacientesPorCliente(cliente.id).subscribe({
       next: (pacientes) =>  {
       console.log("pacientes de clientes" ,pacientes);
       this.pacientesDelCliente = pacientes;

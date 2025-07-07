@@ -1,21 +1,32 @@
-<div class="login-form">
-<h2>Iniciar sesión</h2>
-  <form (ngSubmit)="onSubmit()" #form="ngForm">
-    <input
-      type="email"
-      [(ngModel)]="email"
-      name="email"
-      placeholder="Email"
-      required
-    />
-    <input
-      type="password"
-      [(ngModel)]="password"
-      name="password"
-      placeholder="Contraseña"
-      required
-    />
-      <button type="submit">Login</button>
-  </form>
-  <p *ngIf="error" class="text-red-500">{{ error }}</p>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <div class="login-container">
+  <div class="login-box">
+     <h1 class="titulo">Bienvenido al sistema veterinario 🐾</h1>
+     <p class="subtitulo">Sistema de gestión para veterinarias: turnos, pacientes y más.</p>
+     <img src="assets/img/pet-logo.png" alt="Mascota" width="100" />
+    <h2>Iniciar sesión</h2>
+  <form (ngSubmit)="onSubmit()" #form="ngForm" class="login-form">
+    <input type="email" [(ngModel)]="email" name="email" placeholder="Email" required #emailRef="ngModel"/>
+    <div *ngIf="emailRef.invalid && emailRef.touched" class="error-msg">
+      El email es obligatorio.
+    </div>
+    <input type="password" [(ngModel)]="password" name="password" placeholder="Contraseña" required #passwordRef="ngModel"/>
+    <div *ngIf="passwordRef.invalid && passwordRef.touched" class="error-msg">
+      La contraseña es obligatoria.
+    </div>
+     <button type="submit">🔐 Iniciar sesión</button>
+     <br>
+     <br>
+     <strong><p *ngIf="error" class="error-msg">{{ error }}</p></strong> 
+  </form> 
 </div> 
+</div> 
+</body>
+</html>

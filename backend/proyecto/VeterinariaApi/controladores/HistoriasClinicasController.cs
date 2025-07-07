@@ -30,6 +30,18 @@ namespace VeterinariaApi.Controllers
         {
             var historias = await _context.HistoriaClinica
             .Where(h => h.PacienteId == pacienteId)
+             .Include(h => h.Paciente)
+                .OrderByDescending(h => h.Fecha)
+                .Select(h => new HistoriaClinica
+                {
+                    Id = h.Id,
+                    Fecha = h.Fecha,
+                    Diagnostico = h.Diagnostico,
+                    Tratamiento = h.Tratamiento,
+                    Observaciones = h.Observaciones,
+                    PacienteId = h.PacienteId,
+                    Paciente = h.Paciente
+                })
             .OrderByDescending(h => h.Fecha)
             .ToListAsync();
 
@@ -41,7 +53,7 @@ namespace VeterinariaApi.Controllers
         }
 
         //api/historias
-        [Authorize(Roles = "Admin,Recepcionista,Veterinario")]
+        [Authorize(Roles = "Admin,Veterinario")]
         [HttpPost]
         public async Task<IActionResult> CrearHistoria([FromBody] HistoriaClinicaDto historiadto)
         {
