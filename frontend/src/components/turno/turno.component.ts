@@ -8,6 +8,7 @@ import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common'; 
 import { Turno } from "../../model/turno.model"
 import { PacienteService } from '../../services/paciente/paciente.service';
+
 @Component({
   selector: 'app-turno',
   standalone: true,
@@ -56,7 +57,7 @@ export class TurnoComponent {
   this.obtenerPacientes();
   this.obtenerVeterinarios();
   
-}
+  }
     obtenerTurnos(): void {
       this.turnoService.obtenerTurnos().subscribe({
         next: (data) => {
@@ -82,7 +83,7 @@ export class TurnoComponent {
     this.formAddEdit = false;
     this.obtenerPacientes();
     this.obtenerVeterinarios();
-  }
+    }
 
     editarTurno(turno: any): void {
 
@@ -222,15 +223,14 @@ export class TurnoComponent {
     }
 
     obtenerVeterinarios(): void {
-      this.usuarioService.obtenerUsuarios().subscribe({
+      this.usuarioService.obtenerVeterinarios().subscribe({
         next: (res) => {
-        this.veterinarios = res.filter((usuario: any) => usuario.rol === 'Veterinario');
-        console.log("Veterinarios cargados:", this.veterinarios);
+          this.veterinarios = res;
+          console.log("Veterinarios cargados:", this.veterinarios);
         },
         error: (err) => console.error("Error al obtener veterinarios:", err)
       });
     }
-
     cancelarEdicion() { 
       this.turnoSeleccionado = null;
        this.formAddEdit = false;

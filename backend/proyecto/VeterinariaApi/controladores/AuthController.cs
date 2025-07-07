@@ -235,5 +235,23 @@ namespace VeterinariaApi.Controllers
 
             return Ok(new { mensaje = "Contraseña actualizada correctamente" });
         }
+
+        //api/auth/veterinarios
+        [Authorize(Roles = "Admin,Recepcionista")]
+        [HttpGet("veterinarios")]
+        public IActionResult GetVeterinarios()
+        {
+            var veterinarios = _context.Usuarios
+                .Where(u => u.Rol == "Veterinario")
+                .Select(u => new
+                {
+                    u.Id,
+                    u.Nombre,
+                    u.Email
+                })
+                .ToList();
+
+            return Ok(veterinarios);
+        }
     }
 }

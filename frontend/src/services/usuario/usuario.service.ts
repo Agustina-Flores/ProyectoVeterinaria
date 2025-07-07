@@ -14,6 +14,9 @@ export class UsuarioService {
   obtenerUsuarios():Observable<any> {
     return this.http.get(`${this.apiUrl}/auth/usuarios`);
   }
+  obtenerVeterinarios(): Observable<any> {
+    return this.http.get(`${this.apiUrl}/auth/veterinarios`);
+  }
   editarUsuario(id: number, usuario: any): Observable<any> {
     return this.http.put(`${this.apiUrl}/auth/usuarios/${id}`, usuario);
   }
