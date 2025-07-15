@@ -32,6 +32,11 @@ namespace VeterinariaApi.Controllers
                 return BadRequest(ModelState);
             try
             {
+                var emailExiste = await _context.Clientes
+               .AnyAsync(c => c.Email.ToLower() == dto.Email.ToLower());
+
+                if (emailExiste)
+                    return BadRequest(new { mensaje = "Ya existe un cliente con ese email" });
 
                 var cliente = new Cliente
                 {
@@ -55,16 +60,16 @@ namespace VeterinariaApi.Controllers
         //api/clientes
         [Authorize(Roles = "Admin,Recepcionista,Veterinario")]
         [HttpGet]
-        public IActionResult ObtenerClientes()
+        public async Task<IActionResult> ObtenerClientes()
         {
-            var clientes = _context.Clientes
+            var clientes = await _context.Clientes
                 .Select(c => new
                 {
                     c.Id,
                     c.Nombre,
                     c.Telefono,
                     c.Email
-                }).ToList();
+                }).ToListAsync();
 
             return Ok(clientes);
         }
@@ -121,9 +126,9 @@ namespace VeterinariaApi.Controllers
 
         [Authorize(Roles = "Admin,Recepcionista,Veterinario")]
         [HttpGet("{id}/pacientes")] // api/clientes/{id}/pacientes
-        public IActionResult ObtenerPacientesPorCliente(int id)
+        public async Task<IActionResult> ObtenerPacientesPorCliente(int id)
         {
-            var pacientes = _context.Pacientes
+            var pacientes = await _context.Pacientes
                 .Where(p => p.ClienteId == id)
                 .Select(p => new
                 {
@@ -133,7 +138,7 @@ namespace VeterinariaApi.Controllers
                     p.Raza,
                     p.Especie,
                     p.ClienteId
-                }).ToList();
+                }).ToListAsync();
 
             return Ok(pacientes);
         }

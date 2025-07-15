@@ -3,11 +3,11 @@ export interface Turno {
   fechaHora: string; 
   estado: string;
   paciente: {
-    id: number;
+    id: number | null;
     nombre: string;
   };
   veterinario: {
-    id: number;
+    id: number | null;
     nombre: string;
   };
   notas?: string;

@@ -31,7 +31,6 @@ namespace VeterinariaApi.Controllers
             var historias = await _context.HistoriaClinica
             .Where(h => h.PacienteId == pacienteId)
              .Include(h => h.Paciente)
-                .OrderByDescending(h => h.Fecha)
                 .Select(h => new HistoriaClinica
                 {
                     Id = h.Id,

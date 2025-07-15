@@ -3,14 +3,15 @@ import { AuthService } from '../../services/auth/auth.service';
 import { UsuarioService } from '../../services/usuario/usuario.service';
 import { Router,RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common'; 
-import { FormsModule } from '@angular/forms';
+import { FormsModule } from '@angular/forms'; 
+import { Usuario } from '../../model/usuario.model';
 
 @Component({
   selector: 'app-dashboard',
   imports: [CommonModule,FormsModule,RouterModule],
   templateUrl: './dashboard.component.html',  
   standalone:true,
-  styleUrl: './dashboard.component.scss'
+  styleUrls: ['./dashboard.component.scss'] 
 })
 export class DashboardComponent {
  role: string = '';
@@ -18,10 +19,9 @@ export class DashboardComponent {
  isRecepcionista=false;
  isVeterinario=false;
  isLoggedIn =false;
- usuarios: any[] = [];
- usuarioSeleccionado: any = null; 
- pacienteId!: number;
- claveInvalida: boolean = false;
+ usuarios: Usuario[] = [];
+ usuarioSeleccionado: Usuario | null = null;
+ pacienteId!: number; 
  passwordActual: string = '';
  nuevaPassword: string = '';
  errorPassword: string = '';
@@ -33,8 +33,9 @@ export class DashboardComponent {
   private router: Router) {}
 
    ngOnInit(): void {
+
     if (!this.auth.isLoggedIn()) {
-      this.router.navigate(['/login']); // si no está logueado, lo saco
+      this.router.navigate(['/login']); 
       return;
     }
     this.isLoggedIn = this.auth.isLoggedIn();
@@ -47,6 +48,7 @@ export class DashboardComponent {
         this.obtenerUsuarios();
       } 
   } 
+
   obtenerUsuarios(): void {
   this.usuarioService.obtenerUsuarios().subscribe({
     next: (data) => this.usuarios = data,
@@ -56,12 +58,13 @@ export class DashboardComponent {
 
   editarUsuario(usuario: any) {
     this.usuarioSeleccionado = { ...usuario }; 
-    console.log("usuario" , this.usuarioSeleccionado);
+    //console.log("usuario" , this.usuarioSeleccionado);
   } 
+
   cancelarEdicion() {
-    this.usuarioSeleccionado = null;
-    
+    this.usuarioSeleccionado = null;   
   }
+
   eliminarUsuario(id: number){
     if (confirm('¿Estás seguro de eliminar este usuario?')) {
     this.usuarioService.eliminarUsuario(id).subscribe({
@@ -72,26 +75,26 @@ export class DashboardComponent {
     });
   }
   }
-  guardarCambios() {
-    this.claveInvalida = false;
-    const datosParaEnviar = { ...this.usuarioSeleccionado };
- 
-    console.log('Datos a enviar:', datosParaEnviar);
-    this.usuarioService.editarUsuario(datosParaEnviar.id, datosParaEnviar).subscribe({
+
+  guardarCambios() { 
+    if(!this.usuarioSeleccionado)return;
+
+    const usuarioActualizado = { ...this.usuarioSeleccionado };
+  
+    this.usuarioService.editarUsuario(usuarioActualizado.id, usuarioActualizado).subscribe({
     next: (res) => {
-      console.log('Usuario actualizado:', res);
+      //console.log('Usuario actualizado:', res);
       this.mensajeExito = 'Usuario actualizado correctamente.'; 
        setTimeout(() => {
         this.usuarioSeleccionado = null;
         this.mensajeExito = '';
-
-        // 🌀 Refrescar la lista si querés mantenerla sincronizada con el backend
         this.obtenerUsuarios();
       }, 1500);
     },
     error: (err) => console.error('Error al editar usuario:', err)
     });
-  } 
+  }
+
   cambiarPassword() {
     this.errorPassword = '';
 
@@ -113,11 +116,10 @@ export class DashboardComponent {
         passwordActual: this.passwordActual,
         nuevaPassword: this.nuevaPassword
       };
-      console.log("cambio" , cambioContrasenia, "email" ,);
-
+       console.log('Contraseña cambioContrasenia', cambioContrasenia);
       this.auth.cambiarPassword(email,cambioContrasenia).subscribe({
           next: (res) => {
-            console.log('Contraseña cambiada con éxito', res);
+             console.log('Contraseña cambiada con éxito', res);
             this.mensajeExito = 'Contraseña actualizada correctamente.'; 
               setTimeout(() => { 
               this.mensajeExito = '';
@@ -127,14 +129,14 @@ export class DashboardComponent {
             this.mostrarCambioPassword = false;
           },
           error: (err) => {
-            console.error('Error al cambiar contraseña', err);
-            console.log('Detalles:', err.error);  
+            console.error('Error al cambiar contraseña', err); 
             this.errorPassword = err.error?.mensaje || 'Ocurrió un error.';
           }
         });
-    }
+  }
+
   logout(): void {
-    this.auth.logout();
-    this.router.navigate(['/login']); 
+      this.auth.logout();
+      this.router.navigate(['/login']); 
   }
 }

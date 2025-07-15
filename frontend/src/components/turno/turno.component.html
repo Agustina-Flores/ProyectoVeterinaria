@@ -38,7 +38,7 @@
     </div> 
     <label>Estado:</label>
      <select [(ngModel)]="turnoSeleccionado.estado" name="estado" #estadoCtrl="ngModel" required>
-      <option [ngValue]="null" disabled selected>Seleccione un veterinario</option>
+      <option [ngValue]="null" disabled selected>Seleccione un estado</option>
       <option value="Pendiente">Pendiente</option>
       <option value="Atendido">Atendido</option>
       <option value="Cancelado">Cancelado</option>
@@ -52,7 +52,7 @@
  
 
     <label>Paciente:</label>
-    <select [(ngModel)]="turnoSeleccionado.pacienteId" name="pacienteId" #pacienteCtrl="ngModel" required>
+    <select [(ngModel)]="turnoSeleccionado.paciente.id" name="pacienteId" #pacienteCtrl="ngModel" required>
       <option [ngValue]="null" disabled selected>Seleccione un paciente</option>
       <option *ngFor="let p of pacientes" [value]="p.id">{{ p.nombre }}</option>
     </select>
@@ -61,7 +61,7 @@
     </div>
 
     <label>Veterinario:</label>
-    <select [(ngModel)]="turnoSeleccionado.veterinarioId" name="veterinarioId" #veterinarioCtrl="ngModel" required>
+    <select [(ngModel)]="turnoSeleccionado.veterinario.id" name="veterinarioId" #veterinarioCtrl="ngModel" required>
       <option [ngValue]="null" disabled selected>Seleccione un veterinario</option>
       <option *ngFor="let v of veterinarios" [value]="v.id">{{ v.nombre }}</option>
     </select>

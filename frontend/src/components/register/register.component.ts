@@ -14,17 +14,18 @@ import { NgForm } from '@angular/forms';
   templateUrl: './register.component.html',
   styleUrl: './register.component.scss'
 })
+
 export class RegisterComponent {
-nombre= "";
-email= "";
-password= "";
-rol= "";
+nombre: string = '';
+email: string = '';
+password: string = '';
+rol: string = '';
 error: string | null = null;
 registroExitoso: boolean = false;
 
 constructor(public auth: AuthService, 
-  public usuarioService:UsuarioService,
-  private router: Router) {}
+public usuarioService:UsuarioService,
+private router: Router) {}
 
 
 onSubmit(form: NgForm): void {
@@ -34,11 +35,12 @@ onSubmit(form: NgForm): void {
 
     this.auth.register(this.nombre, this.email,this.password, this.rol).subscribe({
       next: (res) => {
-      console.log('Registrado con éxito');
-      this.registroExitoso = true;
-      form.resetForm(); 
+      //console.log('Registrado con éxito');
       this.registroExitoso = true; 
-        console.log('Usuario registrado:', res); 
+      form.resetForm(); 
+          setTimeout(() => {
+          this.router.navigate(['/dashboard']);
+        }, 1500)
       },
       error: (err) => {
         console.error('Error de register:', err); 

@@ -13,23 +13,22 @@ import { CommonModule } from '@angular/common';
 })
 export class HomeComponent {
   isLoggedIn = false;
-  isAdmin = false;
   role: string = '';
   imagenActual  = 'assets/img/1.png'; 
+  
   constructor(private auth: AuthService, private router: Router) {}
  
 
   ngOnInit(): void {
-    this.isLoggedIn = this.auth.isLoggedIn(); //true si hay token
+    this.isLoggedIn = this.auth.isLoggedIn();  
     this.role = this.auth.getUserRole() || '';
-    this.isAdmin = this.role === 'Admin';
     this.obtenerImagenes();
   }
   
   obtenerImagenes(){
-    let random = Math.random() * 12;
-    random = Math.floor(random);
-    console.log("random" , random);
+    const totalImagenes = 12;
+    const random = Math.floor(Math.random() * totalImagenes) + 1;
+    //console.log("random" , random);
     if(random !== 0){
     this.imagenActual = `assets/img/${random}.png`;
     }
