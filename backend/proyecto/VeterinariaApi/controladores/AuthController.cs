@@ -241,5 +241,15 @@ namespace VeterinariaApi.Controllers
 
             return Ok(veterinarios);
         }
+
+        [HttpGet("test-user")]
+        public async Task<IActionResult> GetTestUser()
+        {
+            var user = await _context.Usuarios.FirstOrDefaultAsync(u => u.Email == "NataliaG@example.com");
+            if (user == null)
+                return NotFound("Usuario no encontrado");
+
+            return Ok(user);
+        }
     }
 }
