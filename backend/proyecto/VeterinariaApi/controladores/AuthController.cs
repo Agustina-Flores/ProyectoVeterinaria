@@ -38,9 +38,12 @@ namespace VeterinariaApi.Controllers
             try
             {
                 var user = await _context.Usuarios.FirstOrDefaultAsync(u => u.Email == dto.Email);
+                /*
                 if (user == null || !BCrypt.Net.BCrypt.Verify(dto.Password, user.PasswordHash))
                     return Unauthorized("Credenciales inválidas");
-
+                */
+                if (user == null || user.PasswordHash != dto.Password)
+                    return Unauthorized(new { mensaje = "Credenciales inválidas" });
                 var token = GenerateJwtToken(user);
                 return Ok(new
                 {
