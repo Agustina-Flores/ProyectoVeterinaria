@@ -2,29 +2,33 @@ import { Injectable } from '@angular/core';
 import { HttpClient,HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs'; 
 import { Router } from '@angular/router';
-  
+import { RegistroUsuario } from '../../model/registroUsuario.model'
+import { CambiarPassword } from '../../model/cambiarPassword.model'
+import { LoginResponse } from '../../model/login.model'
+import { Usuario } from '../../model/usuario.model'
+
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
 
    private apiUrl = 'http://localhost:5195/api'; 
-   usuario: any = null;
+   usuario: Usuario | null = null;
   constructor(private http: HttpClient , private router: Router) { }
 
-  login(email: string , password:string): Observable<any> {
-    return this.http.post(`${this.apiUrl}/auth/login`, { email, password });
+  login(email: string , password:string): Observable<LoginResponse> {
+    return this.http.post<LoginResponse>(`${this.apiUrl}/auth/login`, { email, password });
   }
 
-  cambiarPassword(email: string, cambio: any): Observable<any> {
+  cambiarPassword(email: string, cambio: CambiarPassword): Observable<CambiarPassword> {
     const token = localStorage.getItem('token');
     const headers = new HttpHeaders({
       'Authorization': 'Bearer ' + token
     });
-    return this.http.put(`${this.apiUrl}/auth/usuarios/cambiar-password/${email}`, cambio, { headers });
+    return this.http.put<CambiarPassword>(`${this.apiUrl}/auth/usuarios/cambiar-password/${email}`, cambio, { headers });
   }
-  register(nombre: string, email: string, password: string, rol: string): Observable<any> {
-    return this.http.post(`${this.apiUrl}/auth/register`, { nombre, email, password, rol });
+  register(nombre: string, email: string, password: string, rol: string): Observable<RegistroUsuario> {
+    return this.http.post<RegistroUsuario>(`${this.apiUrl}/auth/register`, { nombre, email, password, rol });
   } 
   
   saveToken(token: string): void {

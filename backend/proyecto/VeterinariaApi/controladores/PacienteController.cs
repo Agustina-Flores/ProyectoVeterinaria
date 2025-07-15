@@ -58,9 +58,9 @@ namespace VeterinariaApi.Controllers
         //api/pacientes
         [Authorize(Roles = "Admin,Recepcionista,Veterinario")]
         [HttpGet]
-        public IActionResult ObtenerPacientes()
+        public async Task<IActionResult> ObtenerPacientes()
         {
-            var pacientes = _context.Pacientes
+            var pacientes = await _context.Pacientes
                 .Select(p => new
                 {
                     p.Id,
@@ -69,7 +69,7 @@ namespace VeterinariaApi.Controllers
                     p.Raza,
                     p.Especie,
                     p.ClienteId
-                }).ToList();
+                }).ToListAsync();
 
             return Ok(pacientes);
         }
@@ -92,6 +92,7 @@ namespace VeterinariaApi.Controllers
                 paciente.Raza = pacienteDto.Raza;
                 paciente.Especie = pacienteDto.Especie;
                 paciente.ClienteId = pacienteDto.ClienteId;
+
                 await _context.SaveChangesAsync();
 
                 return Ok(new { mensaje = "Paciente actualizado correctamente" });

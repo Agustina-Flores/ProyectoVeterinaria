@@ -47,7 +47,7 @@ h4{
   font-size: 1rem;
 }
 
-.login-form button {
+.login-form button[type="submit"] {
   width: 100%;
   padding: 12px;
   background-color: #4CAF50;
@@ -59,7 +59,7 @@ h4{
   transition: background 0.3s;
 }
 
-.login-form button:hover {
+.login-form button[type="submit"]:hover {
   background-color: #45a049;
 }
 
@@ -78,4 +78,18 @@ input.ng-invalid.ng-touched {
   font-size: 14px;
   margin-top: -10px;
   margin-bottom: 10px;
+}
+
+.toggle-btn {
+  background: none;
+  color: #007bff;  
+  border: none;
+  cursor: pointer;
+  font-size: 0.9rem;
+  padding: 0;
+  margin-top: 4px;
+}
+
+.toggle-btn:hover {
+  text-decoration: underline;
 }

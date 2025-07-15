@@ -66,9 +66,9 @@ namespace VeterinariaApi.Controllers
         //api/turnos
         [Authorize(Roles = "Admin,Recepcionista,Veterinario")]
         [HttpGet]
-        public IActionResult ObtenerTurnos()
+        public async Task<IActionResult> ObtenerTurnos()
         {
-            var turnos = _context.Turnos
+            var turnos = await _context.Turnos
                .Include(t => t.Paciente)
                .Include(t => t.Veterinario)
                .Select(t => new
@@ -87,7 +87,7 @@ namespace VeterinariaApi.Controllers
                        t.Veterinario.Nombre
                    },
                    t.Notas
-               }).ToList();
+               }).ToListAsync();
             return Ok(turnos);
         }
 

@@ -48,7 +48,6 @@
         </div>
 
         <button (click)="logout()">🚪 Cerrar sesión</button>
-        <button (click)="auth.volverLogin()">🔙 Volver al login</button>
 
         <p class="success-msg" *ngIf="mensajeExito">✅ {{ mensajeExito }}</p>
         <div *ngIf="mostrarCambioPassword">
@@ -97,7 +96,7 @@
             <button (click)="editarUsuario(usuario)">✏️</button>
             <button (click)="eliminarUsuario(usuario.id)">🗑️</button>
           </div>
-          <!-- Formulario para editar -->
+ 
            <p class="success-msg" *ngIf="mensajeExito">✅ {{ mensajeExito }}</p>
           <div *ngIf="usuarioSeleccionado">
             <h4>Editar usuario</h4>

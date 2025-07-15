@@ -72,15 +72,11 @@ namespace VeterinariaApi.Controllers
                 return BadRequest(ModelState);
             try
             {
-
                 if (!rolesValidos.Contains(dto.Rol))
                     return BadRequest(new { mensaje = "Rol inválido" });
 
-                var existe = _context.Usuarios
-                .Any(u => u.Email.ToLower() == dto.Email.ToLower());
-
-                if (existe)
-                    return BadRequest(new { mensaje = "El email ya está registrado" });
+                var existe = await _context.Usuarios.AnyAsync(u => u.Email.ToLower() == dto.Email.ToLower());
+                if (existe) return BadRequest(new { mensaje = "El email ya está registrado" });
 
                 var user = new Usuario
                 {
@@ -93,14 +89,7 @@ namespace VeterinariaApi.Controllers
                 _context.Usuarios.Add(user);
                 await _context.SaveChangesAsync();
 
-                return Ok(new
-                {
-                    Nombre = user.Nombre,
-                    Email = user.Email,
-                    Rol = user.Rol,
-                    mensaje = "Usuario creado correctamente"
-                });
-
+                return Ok(new { user.Nombre, user.Email, user.Rol, mensaje = "Usuario creado correctamente" });
             }
             catch (Exception ex)
             {
@@ -109,7 +98,7 @@ namespace VeterinariaApi.Controllers
 
         }
 
-        [Authorize]//solo usuarios logueados
+        [Authorize]//solo logueados
         [HttpGet("dashboard")]
         public IActionResult VerClaims()
         {
@@ -229,19 +218,15 @@ namespace VeterinariaApi.Controllers
             usuario.PasswordHash = BCrypt.Net.BCrypt.HashPassword(dto.NuevaPassword);
             await _context.SaveChangesAsync();
 
-            // Hash nueva contraseña y guardar
-            usuario.PasswordHash = BCrypt.Net.BCrypt.HashPassword(dto.NuevaPassword);
-            await _context.SaveChangesAsync();
-
             return Ok(new { mensaje = "Contraseña actualizada correctamente" });
         }
 
         //api/auth/veterinarios
         [Authorize(Roles = "Admin,Recepcionista")]
         [HttpGet("veterinarios")]
-        public IActionResult GetVeterinarios()
+        public async Task<IActionResult> GetVeterinarios()
         {
-            var veterinarios = _context.Usuarios
+            var veterinarios = await _context.Usuarios
                 .Where(u => u.Rol == "Veterinario")
                 .Select(u => new
                 {
@@ -249,7 +234,7 @@ namespace VeterinariaApi.Controllers
                     u.Nombre,
                     u.Email
                 })
-                .ToList();
+                .ToListAsync();
 
             return Ok(veterinarios);
         }
