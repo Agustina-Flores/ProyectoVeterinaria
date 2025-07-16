@@ -5,15 +5,10 @@ EXPOSE 10000
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
 
-# Copiás todo desde la raíz del repo
 COPY . .
 
-# carpeta donde está el .csproj
-WORKDIR /src/backend/proyecto/VeterinariaApi
-
-# Restaurás y publicás
-RUN dotnet restore
-RUN dotnet publish -c Release -o /app/publish
+RUN dotnet restore VeterinariaApi.csproj
+RUN dotnet publish VeterinariaApi.csproj -c Release -o /app/publish
 
 FROM base AS final
 WORKDIR /app
