@@ -38,6 +38,10 @@ namespace VeterinariaApi.Controllers
             try
             {
                 var user = await _context.Usuarios.FirstOrDefaultAsync(u => u.Email == dto.Email);
+
+                Console.WriteLine($"Email: {dto.Email}");
+                Console.WriteLine($"Pass ingresada: {dto.Password}");
+                Console.WriteLine($"Pass en base: {user?.PasswordHash}");
                 /*
                 if (user == null || !BCrypt.Net.BCrypt.Verify(dto.Password, user.PasswordHash))
                     return Unauthorized("Credenciales inválidas");
@@ -250,6 +254,13 @@ namespace VeterinariaApi.Controllers
                 return NotFound("Usuario no encontrado");
 
             return Ok(user);
+        }
+
+        [HttpGet("check-db-connection")]
+        public IActionResult CheckDbConnection()
+        {
+            var connectionString = _context.Database.GetDbConnection().ConnectionString;
+            return Ok(new { connectionString });
         }
     }
 }
