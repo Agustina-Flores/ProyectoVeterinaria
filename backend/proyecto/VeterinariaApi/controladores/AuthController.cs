@@ -66,7 +66,7 @@ namespace VeterinariaApi.Controllers
         }
 
         //api/auth/register
-        [Authorize(Roles = "Admin")]
+        //[Authorize(Roles = "Admin")]
         [HttpPost("register")]
         public async Task<IActionResult> Register(RegisterDto dto)
         {
