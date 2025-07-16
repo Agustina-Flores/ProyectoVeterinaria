@@ -4,12 +4,19 @@ using Microsoft.EntityFrameworkCore;
 using VeterinariaApi.Data;
 using Npgsql.EntityFrameworkCore.PostgreSQL;
 using System.Text;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// 🔐 Imprimir el hash de prueba (solo una vez)
+//Console.WriteLine(BCrypt.Net.BCrypt.HashPassword("222222"));
+
 // 🔗 1. Configurar base de datos PostgreSQL
 builder.Services.AddDbContext<ApiDbContext>(options =>
-   options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+{
+    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"))
+           .ConfigureWarnings(warnings => warnings.Ignore(RelationalEventId.PendingModelChangesWarning));
+});
 
 // 🔐 2. Configurar autenticación JWT
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)

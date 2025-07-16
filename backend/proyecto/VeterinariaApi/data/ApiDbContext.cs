@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using VeterinariaApi.Models;
+using BCrypt.Net;
 
 namespace VeterinariaApi.Data
 {
@@ -29,7 +30,7 @@ namespace VeterinariaApi.Data
                    Id = 1,
                    Nombre = "Natalia",
                    Email = "agustina@example.com",
-                   PasswordHash = BCrypt.Net.BCrypt.HashPassword("222222"),
+                   PasswordHash = "$2a$11$USTCLvu0SeTHIcUeoTzoVeE0wcxjRZc4JH8WSD8UUS7kUYvFW7RDy",
                    Rol = "Admin"
                },
                new Usuario
@@ -37,7 +38,7 @@ namespace VeterinariaApi.Data
                    Id = 2,
                    Nombre = "Sandra López",
                    Email = "sandra@example.com",
-                   PasswordHash = BCrypt.Net.BCrypt.HashPassword("222222"),
+                   PasswordHash = "$2a$11$USTCLvu0SeTHIcUeoTzoVeE0wcxjRZc4JH8WSD8UUS7kUYvFW7RDy",
                    Rol = "Recepcionista"
                },
                 new Usuario
@@ -45,7 +46,7 @@ namespace VeterinariaApi.Data
                     Id = 3,
                     Nombre = "Marcelo ",
                     Email = "marceloG@gmail.com",
-                    PasswordHash = BCrypt.Net.BCrypt.HashPassword("222222"),
+                    PasswordHash = "$2a$11$B8J3fEqgACv/Uvo9vBNv2uFr6XhORqFgAxpwRTulC2P2W9ybPHsAy", // valor generado fijo
                     Rol = "Veterinario"
                 }
             );
@@ -98,13 +99,11 @@ namespace VeterinariaApi.Data
                     ClienteId = 2
                 }
             );
-
-            // 🌱 Turnos de ejemplo
             modelBuilder.Entity<Turno>().HasData(
                 new Turno
                 {
                     Id = 1,
-                    FechaHora = new DateTime(2025, 7, 14, 0, 31, 0),
+                    FechaHora = new DateTime(2025, 7, 14, 0, 31, 0, DateTimeKind.Utc),
                     Estado = "Atendido",
                     Notas = "Paciente revisado, en buen estado",
                     PacienteId = 1,
@@ -112,26 +111,25 @@ namespace VeterinariaApi.Data
                 }
             );
 
-            // 🌱 Historia clínica de ejemplo
             modelBuilder.Entity<HistoriaClinica>().HasData(
                 new HistoriaClinica
                 {
                     Id = 1,
-                    Fecha = DateTime.Parse("2025-07-14"),
+                    Fecha = new DateTime(2025, 7, 14, 0, 0, 0, DateTimeKind.Utc),
                     Diagnostico = "Esterilización",
                     Tratamiento = "Antibiótico por 7 días",
                     Observaciones = "Reposo",
                     PacienteId = 1
                 },
-                 new HistoriaClinica
-                 {
-                     Id = 2,
-                     Fecha = DateTime.Parse("2025-07-14"),
-                     Diagnostico = "Gastroenteritis Leve",
-                     Tratamiento = "Ninguno",
-                     Observaciones = "Ninguno",
-                     PacienteId = 2
-                 }
+                new HistoriaClinica
+                {
+                    Id = 2,
+                    Fecha = new DateTime(2025, 7, 14, 0, 0, 0, DateTimeKind.Utc),
+                    Diagnostico = "Gastroenteritis Leve",
+                    Tratamiento = "Ninguno",
+                    Observaciones = "Ninguno",
+                    PacienteId = 2
+                }
             );
         }
     }
