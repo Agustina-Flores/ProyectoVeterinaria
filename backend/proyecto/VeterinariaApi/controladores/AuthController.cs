@@ -10,6 +10,8 @@ using VeterinariaApi.Data;
 using VeterinariaApi.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
+using System.Security.Cryptography;
+using System.Text;
 namespace VeterinariaApi.Controllers
 {
 
@@ -46,19 +48,14 @@ namespace VeterinariaApi.Controllers
                 if (user == null || !BCrypt.Net.BCrypt.Verify(dto.Password, user.PasswordHash))
                     return Unauthorized("Credenciales inválidas");
                 */
-                if (user == null || user.PasswordHash != dto.Password)
+                if (user == null || !BCrypt.Net.BCrypt.Verify(dto.Password, user.PasswordHash))
                     return Unauthorized(new { mensaje = "Credenciales inválidas" });
+
+                // Si pasa, generar token JWT
                 var token = GenerateJwtToken(user);
-                return Ok(new
-                {
-                    token,
-                    usuario = new
-                    {
-                        user.Nombre,
-                        user.Email,
-                        user.Rol
-                    }
-                });
+
+                // Retornar token (o lo que necesites)
+                return Ok(new { token });
             }
             catch (Exception ex)
             {
@@ -261,6 +258,17 @@ namespace VeterinariaApi.Controllers
         {
             var connectionString = _context.Database.GetDbConnection().ConnectionString;
             return Ok(new { connectionString });
+        }
+
+
+        public static string HashPassword(string password)
+        {
+            using (var sha256 = SHA256.Create())
+            {
+                var bytes = Encoding.UTF8.GetBytes(password);
+                var hash = sha256.ComputeHash(bytes);
+                return Convert.ToBase64String(hash);
+            }
         }
     }
 }
