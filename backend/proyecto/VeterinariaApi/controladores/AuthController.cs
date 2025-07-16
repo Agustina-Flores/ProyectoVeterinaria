@@ -44,10 +44,6 @@ namespace VeterinariaApi.Controllers
                 Console.WriteLine($"Email: {dto.Email}");
                 Console.WriteLine($"Pass ingresada: {dto.Password}");
                 Console.WriteLine($"Pass en base: {user?.PasswordHash}");
-                /*
-                if (user == null || !BCrypt.Net.BCrypt.Verify(dto.Password, user.PasswordHash))
-                    return Unauthorized("Credenciales inválidas");
-                */
                 if (user == null || !BCrypt.Net.BCrypt.Verify(dto.Password, user.PasswordHash))
                     return Unauthorized(new { mensaje = "Credenciales inválidas" });
 

@@ -263,9 +263,9 @@ namespace VeterinariaApi.Migrations
                         new
                         {
                             Id = 1,
-                            Email = "agustina@example.com",
+                            Email = "NataliaG@example.com",
                             Nombre = "Natalia",
-                            PasswordHash = "$2a$11$USTCLvu0SeTHIcUeoTzoVeE0wcxjRZc4JH8WSD8UUS7kUYvFW7RDy",
+                            PasswordHash = "$2a$11$97pavl7szjbAAZsQSrS8Z.sAxTPZHo/mO0w.9kXUxFP4QdpSv8rim",
                             Rol = "Admin"
                         },
                         new
@@ -273,7 +273,7 @@ namespace VeterinariaApi.Migrations
                             Id = 2,
                             Email = "sandra@example.com",
                             Nombre = "Sandra López",
-                            PasswordHash = "$2a$11$USTCLvu0SeTHIcUeoTzoVeE0wcxjRZc4JH8WSD8UUS7kUYvFW7RDy",
+                            PasswordHash = "$2a$11$97pavl7szjbAAZsQSrS8Z.sAxTPZHo/mO0w.9kXUxFP4QdpSv8rim",
                             Rol = "Recepcionista"
                         },
                         new
@@ -281,7 +281,7 @@ namespace VeterinariaApi.Migrations
                             Id = 3,
                             Email = "marceloG@gmail.com",
                             Nombre = "Marcelo ",
-                            PasswordHash = "$2a$11$B8J3fEqgACv/Uvo9vBNv2uFr6XhORqFgAxpwRTulC2P2W9ybPHsAy",
+                            PasswordHash = "$2a$11$97pavl7szjbAAZsQSrS8Z.sAxTPZHo/mO0w.9kXUxFP4QdpSv8rim",
                             Rol = "Veterinario"
                         });
                 });

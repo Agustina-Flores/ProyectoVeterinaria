@@ -8,9 +8,6 @@ using Microsoft.EntityFrameworkCore.Diagnostics;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// 🔐 Imprimir el hash de prueba (solo una vez)
-//Console.WriteLine(BCrypt.Net.BCrypt.HashPassword("222222"));
-
 // 🔗 1. Configurar base de datos PostgreSQL
 builder.Services.AddDbContext<ApiDbContext>(options =>
 {
