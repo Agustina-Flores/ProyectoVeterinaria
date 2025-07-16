@@ -109,15 +109,6 @@ namespace VeterinariaApi.Controllers
 
         }
 
-
-        [HttpGet("clientes-test")]
-        public async Task<IActionResult> ClientesTest()
-        {
-            var total = await _context.Clientes.CountAsync();
-            return Ok(new { cantidad = total });
-        }
-
-
         //api/clientes/{id}
         [Authorize(Roles = "Admin")]
         [HttpDelete("{id}")]
