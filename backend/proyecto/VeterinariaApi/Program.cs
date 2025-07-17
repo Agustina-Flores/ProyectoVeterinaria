@@ -40,7 +40,9 @@ builder.Services.AddAuthorization();
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowFrontend", policy =>
-        policy.WithOrigins("http://localhost:4200", "https://proyectoveterinaria.onrender.com")
+        policy.WithOrigins("http://localhost:4200",
+         "https://proyectoveterinaria.onrender.com",
+        "https://veterinaria-frontend-74k3.onrender.com")
               .AllowAnyHeader()
               .AllowAnyMethod()
     );
