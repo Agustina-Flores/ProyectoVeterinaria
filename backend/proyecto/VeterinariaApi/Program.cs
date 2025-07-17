@@ -39,9 +39,12 @@ builder.Services.AddAuthorization();
 // ✅ 🔧 CORS debe ir ANTES del Build
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowFrontend",
+    options.AddPolicy("AllowAll",
         policy => policy
-            .WithOrigins("http://localhost:4200") // Angular
+            .WithOrigins(
+                "http://localhost:4200",
+                "https://proyectoveterinaria.onrender.com"
+            )
             .AllowAnyMethod()
             .AllowAnyHeader());
 });
@@ -61,7 +64,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseCors("AllowFrontend");
+app.UseCors("AllowAll");
 
 app.UseHttpsRedirection();
 app.UseAuthentication();
