@@ -62,7 +62,7 @@ namespace VeterinariaApi.Controllers
         }
 
         //api/auth/register
-        //[Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin")]
         [HttpPost("register")]
         public async Task<IActionResult> Register(RegisterDto dto)
         {
@@ -239,32 +239,5 @@ namespace VeterinariaApi.Controllers
             return Ok(veterinarios);
         }
 
-        [HttpGet("test-user")]
-        public async Task<IActionResult> GetTestUser()
-        {
-            var user = await _context.Usuarios.FirstOrDefaultAsync(u => u.Email == "NataliaG@example.com");
-            if (user == null)
-                return NotFound("Usuario no encontrado");
-
-            return Ok(user);
-        }
-
-        [HttpGet("check-db-connection")]
-        public IActionResult CheckDbConnection()
-        {
-            var connectionString = _context.Database.GetDbConnection().ConnectionString;
-            return Ok(new { connectionString });
-        }
-
-
-        public static string HashPassword(string password)
-        {
-            using (var sha256 = SHA256.Create())
-            {
-                var bytes = Encoding.UTF8.GetBytes(password);
-                var hash = sha256.ComputeHash(bytes);
-                return Convert.ToBase64String(hash);
-            }
-        }
     }
 }
