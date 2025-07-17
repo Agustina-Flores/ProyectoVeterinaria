@@ -39,14 +39,11 @@ builder.Services.AddAuthorization();
 // ✅ 🔧 CORS debe ir ANTES del Build
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowAll",
-        policy => policy
-            .WithOrigins(
-                "http://localhost:4200",
-                "https://proyectoveterinaria.onrender.com"
-            )
-            .AllowAnyMethod()
-            .AllowAnyHeader());
+    options.AddPolicy("AllowFrontend", policy =>
+        policy.WithOrigins("http://localhost:4200", "https://proyectoveterinaria.onrender.com")
+              .AllowAnyHeader()
+              .AllowAnyMethod()
+    );
 });
 
 // 🧩 4. Servicios de la API (Swagger, Controllers)
@@ -64,7 +61,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseCors("AllowAll");
+app.UseCors("AllowFrontend");
 
 app.UseHttpsRedirection();
 app.UseAuthentication();

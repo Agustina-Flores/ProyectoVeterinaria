@@ -6,6 +6,7 @@ import { RegistroUsuario } from '../../model/registroUsuario.model'
 import { CambiarPassword } from '../../model/cambiarPassword.model'
 import { LoginResponse } from '../../model/login.model'
 import { Usuario } from '../../model/usuario.model'
+import { environment } from '../../environment/environment.prod'
 
 @Injectable({
   providedIn: 'root'
@@ -17,7 +18,7 @@ export class AuthService {
   constructor(private http: HttpClient , private router: Router) { }
 
   login(email: string , password:string): Observable<LoginResponse> {
-    return this.http.post<LoginResponse>(`${this.apiUrl}/auth/login`, { email, password });
+    return this.http.post<LoginResponse>(`${environment.apiUrl}/auth/login`, { email, password });
   }
 
   cambiarPassword(email: string, cambio: CambiarPassword): Observable<CambiarPassword> {
@@ -25,10 +26,10 @@ export class AuthService {
     const headers = new HttpHeaders({
       'Authorization': 'Bearer ' + token
     });
-    return this.http.put<CambiarPassword>(`${this.apiUrl}/auth/usuarios/cambiar-password/${email}`, cambio, { headers });
+    return this.http.put<CambiarPassword>(`${environment.apiUrl}/auth/usuarios/cambiar-password/${email}`, cambio, { headers });
   }
   register(nombre: string, email: string, password: string, rol: string): Observable<RegistroUsuario> {
-    return this.http.post<RegistroUsuario>(`${this.apiUrl}/auth/register`, { nombre, email, password, rol });
+    return this.http.post<RegistroUsuario>(`${environment.apiUrl}/auth/register`, { nombre, email, password, rol });
   } 
   
   saveToken(token: string): void {
