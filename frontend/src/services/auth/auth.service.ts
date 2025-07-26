@@ -15,7 +15,8 @@ export class AuthService {
 
    private apiUrl = 'http://localhost:5195/api'; 
    usuario: Usuario | null = null;
-  constructor(private http: HttpClient , private router: Router) { }
+   constructor(private http: HttpClient , private router: Router) {
+   }
 
   login(email: string , password:string): Observable<LoginResponse> {
     return this.http.post<LoginResponse>(`${environment.apiUrl}/auth/login`, { email, password });
@@ -42,7 +43,7 @@ export class AuthService {
 
   logout(): void {
     localStorage.removeItem('token');
-    localStorage.removeItem('rol');
+    localStorage.removeItem('rol'); 
   }
 
   isLoggedIn(): boolean {
