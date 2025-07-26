@@ -37,6 +37,7 @@ namespace VeterinariaApi.Controllers
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
+
             try
             {
                 var user = await _context.Usuarios.FirstOrDefaultAsync(u => u.Email == dto.Email);
@@ -44,18 +45,26 @@ namespace VeterinariaApi.Controllers
                 Console.WriteLine($"Email: {dto.Email}");
                 Console.WriteLine($"Pass ingresada: {dto.Password}");
                 Console.WriteLine($"Pass en base: {user?.PasswordHash}");
+
                 if (user == null || !BCrypt.Net.BCrypt.Verify(dto.Password, user.PasswordHash))
                     return Unauthorized(new { mensaje = "Credenciales inválidas" });
 
-                // Si pasa, generar token JWT
                 var token = GenerateJwtToken(user);
 
-                // Retornar token (o lo que necesites)
-                return Ok(new { token });
+                return Ok(new
+                {
+                    token,
+                    usuario = new
+                    {
+                        id = user.Id,
+                        nombre = user.Nombre,
+                        email = user.Email,
+                        rol = user.Rol
+                    }
+                });
             }
             catch (Exception ex)
             {
-
                 return StatusCode(500, new { mensaje = "Ocurrió un error inesperado", detalle = ex.Message });
             }
 
