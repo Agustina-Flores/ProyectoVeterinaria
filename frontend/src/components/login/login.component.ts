@@ -19,12 +19,12 @@ export class LoginComponent {
  
 constructor(private auth: AuthService, private router: Router) {}
 
-  onSubmit(): void {
-    this.auth.login(this.email, this.password).subscribe({
+onSubmit(): void {
+ this.auth.login(this.email, this.password).subscribe({
       next: (res) => {
         this.auth.saveToken(res.token);
         this.auth.usuario = res.usuario;
-        //console.log('this.auth.usuario:', this.auth.usuario); 
+        console.log('this.auth.usuario:', this.auth.usuario); 
         this.router.navigate(['/dashboard']);
       },
       error: (err) => {
@@ -32,6 +32,5 @@ constructor(private auth: AuthService, private router: Router) {}
         this.error = 'Credenciales inválidas';
       }
     });
-  } 
-   
+}
 }
