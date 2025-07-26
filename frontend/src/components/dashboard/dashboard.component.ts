@@ -97,7 +97,7 @@ export class DashboardComponent {
 
   cambiarPassword() {
     this.errorPassword = '';
-
+   
     if (!this.passwordActual || !this.nuevaPassword) {
       this.errorPassword = 'Todos los campos son obligatorios.';
         return;
@@ -108,6 +108,7 @@ export class DashboardComponent {
         return;
       }
       const email = this.auth.usuario?.email;
+      console.log("email " ,email)
       if (!email) {
         this.errorPassword = 'No se pudo obtener el email del usuario.';
         return;
