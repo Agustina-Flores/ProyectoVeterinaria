@@ -72,8 +72,14 @@ Desarrollado con **Angular** (frontend) y **.NET Core** (backend), incluye login
 
 ## 🧪 Demo
 
-🔗 Video demostrativo con login y funcionalidades por rol:  
-[https://youtu.be/tu-link](https://youtu.be/tu-link)
+🔗 Accedé a la demo funcionando acá:
+https://veterinaria-frontend-74k3.onrender.com
+
+🧑‍💼 Usuario de prueba (Admin)
+
+Usuario: admin@gmail.com
+
+Contraseña: admin123
 
 ---
 
