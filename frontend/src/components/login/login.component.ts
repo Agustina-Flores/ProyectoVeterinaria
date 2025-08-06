@@ -16,18 +16,22 @@ export class LoginComponent {
   password = "";
   error: string | null = null;  
  verPassword = false;
- 
+ isLoading = false;
+
 constructor(private auth: AuthService, private router: Router) {}
 
 onSubmit(): void {
- this.auth.login(this.email, this.password).subscribe({
-      next: (res) => {
+  
+  this.isLoading = true;
+  this.auth.login(this.email, this.password).subscribe({
+      next: (res) => { 
         this.auth.saveToken(res.token);
         this.auth.usuario = res.usuario;
         console.log('this.auth.usuario:', this.auth.usuario); 
         this.router.navigate(['/dashboard']);
       },
       error: (err) => {
+         this.isLoading = false;
         console.error('Error de login:', err); 
         this.error = 'Credenciales inválidas';
       }
