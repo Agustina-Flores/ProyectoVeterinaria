@@ -25,8 +25,15 @@
       <button type="button" class="toggle-btn" (click)="verPassword = !verPassword">
         {{ verPassword ? '🙈 Ocultar' : '👁 Mostrar' }}
      </button>
-      <button type="submit" [disabled]="form.invalid">🔐 Iniciar sesión</button>
+      <button type="submit" [disabled]="form.invalid || isLoading">
+        <span *ngIf="!isLoading">🔐 Iniciar sesión</span>
+        <span *ngIf="isLoading">⏳ Cargando...</span>
+      </button>
       <br>
+      <br>
+      <div *ngIf="isLoading" class="text-sm text-blue-500 mt-2" style="color: #007bff;">
+        Iniciando sesión, esto puede tardar unos segundos ⏳
+      </div>
       <br>
       <strong><p *ngIf="error" class="error-msg">{{ error }}</p></strong> 
     </form> 
