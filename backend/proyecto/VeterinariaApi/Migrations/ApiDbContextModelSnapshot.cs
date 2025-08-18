@@ -47,29 +47,6 @@ namespace VeterinariaApi.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Clientes");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Email = "juan@example.com",
-                            Nombre = "Juan Pérez",
-                            Telefono = "123456789"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Email = "ElMartinez@example.com",
-                            Nombre = "Eliana Martinez",
-                            Telefono = "987654321"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Email = "p@example",
-                            Nombre = "Paula",
-                            Telefono = "213123123213"
-                        });
                 });
 
             modelBuilder.Entity("VeterinariaApi.Models.HistoriaClinica", b =>
@@ -103,26 +80,6 @@ namespace VeterinariaApi.Migrations
                     b.HasIndex("PacienteId");
 
                     b.ToTable("HistoriaClinica");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Diagnostico = "Esterilización",
-                            Fecha = new DateTime(2025, 7, 14, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Observaciones = "Reposo",
-                            PacienteId = 1,
-                            Tratamiento = "Antibiótico por 7 días"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Diagnostico = "Gastroenteritis Leve",
-                            Fecha = new DateTime(2025, 7, 14, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Observaciones = "Ninguno",
-                            PacienteId = 2,
-                            Tratamiento = "Ninguno"
-                        });
                 });
 
             modelBuilder.Entity("VeterinariaApi.Models.Paciente", b =>
@@ -159,28 +116,6 @@ namespace VeterinariaApi.Migrations
                     b.HasIndex("ClienteId");
 
                     b.ToTable("Pacientes");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            ClienteId = 1,
-                            Edad = 4,
-                            Especie = "perra",
-                            Nombre = "luna",
-                            Peso = 0f,
-                            Raza = "caniche"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            ClienteId = 2,
-                            Edad = 3,
-                            Especie = "perro",
-                            Nombre = "roco",
-                            Peso = 0f,
-                            Raza = "labrador"
-                        });
                 });
 
             modelBuilder.Entity("VeterinariaApi.Models.Turno", b =>
@@ -215,17 +150,6 @@ namespace VeterinariaApi.Migrations
                     b.HasIndex("VeterinarioId");
 
                     b.ToTable("Turnos");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Estado = "Atendido",
-                            FechaHora = new DateTime(2025, 7, 14, 0, 31, 0, 0, DateTimeKind.Utc),
-                            Notas = "Paciente revisado, en buen estado",
-                            PacienteId = 1,
-                            VeterinarioId = 3
-                        });
                 });
 
             modelBuilder.Entity("VeterinariaApi.Models.Usuario", b =>
@@ -258,32 +182,6 @@ namespace VeterinariaApi.Migrations
                         .IsUnique();
 
                     b.ToTable("Usuarios");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Email = "NataliaG@example.com",
-                            Nombre = "Natalia",
-                            PasswordHash = "$2a$11$97pavl7szjbAAZsQSrS8Z.sAxTPZHo/mO0w.9kXUxFP4QdpSv8rim",
-                            Rol = "Admin"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Email = "sandra@example.com",
-                            Nombre = "Sandra López",
-                            PasswordHash = "$2a$11$97pavl7szjbAAZsQSrS8Z.sAxTPZHo/mO0w.9kXUxFP4QdpSv8rim",
-                            Rol = "Recepcionista"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Email = "marceloG@gmail.com",
-                            Nombre = "Marcelo ",
-                            PasswordHash = "$2a$11$97pavl7szjbAAZsQSrS8Z.sAxTPZHo/mO0w.9kXUxFP4QdpSv8rim",
-                            Rol = "Veterinario"
-                        });
                 });
 
             modelBuilder.Entity("VeterinariaApi.Models.HistoriaClinica", b =>
